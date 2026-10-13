@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Casa&Estilo BI Studio | Equipo 8 - FIME</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Top Navigation Header -->
+  <header class="app-header">
+    <div class="header-brand">
+      <div class="brand-icon">🛋️</div>
+      <div>
+        <div class="brand-title">Casa&Estilo <span class="brand-badge">BI Studio</span></div>
+        <div class="brand-subtitle">Data Mart de Ventas • FIME 2026 • <strong>Equipo 8</strong></div>
+      </div>
+    </div>
+
+    <!-- Status Badges & Quick Stats -->
+    <div class="header-meta">
+      <div class="meta-pill" id="db-status-pill">
+        <span class="status-dot pulsing"></span>
+        <span id="db-status-text">Conectando a PostgreSQL...</span>
+      </div>
+      <div class="meta-pill team-pill">
+        <span>👥 Arely • Rafael • Sergio</span>
+      </div>
+      <button class="btn btn-outline" id="btn-refresh" title="Actualizar Datos">🔄 Recargar</button>
+    </div>
+  </header>
+
+  <!-- Navigation Tab Bar -->
+  <nav class="app-nav">
+    <button class="nav-tab active" data-tab="tab-exposicion">
+      <span class="tab-icon">🎙️</span> Modo Exposición (5 Min)
+    </button>
+    <button class="nav-tab" data-tab="tab-tablas">
+      <span class="tab-icon">📊</span> Explorador de Tablas
+    </button>
+    <button class="nav-tab" data-tab="tab-reto">
+      <span class="tab-icon">🏆</span> Reto Unidad 3: Top 5 Rentabilidad
+    </button>
+    <button class="nav-tab" data-tab="tab-playground">
+      <span class="tab-icon">⚡</span> Playground SQL & EXPLAIN
+    </button>
+    <button class="nav-tab" data-tab="tab-modelo">
+      <span class="tab-icon">📐</span> Esquema Estrella (ER)
+    </button>
+  </nav>
+
+  <!-- Main Content Viewport -->
+  <main class="app-content">
+
+    <!-- ==================== TAB 1: MODO EXPOSICIÓN (5 MINUTOS) ==================== -->
+    <section id="tab-exposicion" class="tab-panel active">
+      <div class="presentation-header">
+        <div>
+          <h2>🎙️ Presentación Oral de Negocio (5 Minutos)</h2>
+          <p class="section-desc">Estructura guiada para la defensa oral del proyecto conforme a la rúbrica de la Unidad 3.</p>
+        </div>
+        <div class="slide-controls">
+          <button class="btn btn-sm btn-outline" id="slide-prev">◀ Anterior</button>
+          <span class="slide-indicator" id="slide-num">Paso 1 de 5</span>
+          <button class="btn btn-sm btn-primary" id="slide-next">Siguiente ▶</button>
+        </div>
+      </div>
+
+      <!-- Slide Container -->
+      <div class="slides-wrapper">
+        <!-- Slide 1 -->
+        <div class="pitch-slide active" data-slide="1">
+          <div class="slide-badge">01 • Introducción & Caso de Estudio</div>
+          <h3 class="slide-title">Casa&Estilo: Data Mart de Ventas para Retail Especializado</h3>
+          <p class="slide-text">Consolidación de datos operacionales en un esquema dimensional para soportar análisis histórico, rentabilidad por producto/región y cumplimiento logístico de entregas.</p>
+          
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <div class="kpi-label">Empresa Asignada</div>
+              <div class="kpi-value text-accent">Casa&Estilo</div>
+              <div class="kpi-sub">Muebles, decoración y diseño de interiores</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Equipo de Desarrollo</div>
+              <div class="kpi-value">Equipo 8</div>
+              <div class="kpi-sub">Arely Carrillo • Rafael Collazo • Sergio Butzmann</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Base de Datos</div>
+              <div class="kpi-value">PostgreSQL 16</div>
+              <div class="kpi-sub">Contenedorizado en Docker (Cero dependencias locales)</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Enfoque Analítico</div>
+              <div class="kpi-value text-success">Rentabilidad & Fletes</div>
+              <div class="kpi-sub">Cálculo con prorrateo de descuentos y envíos</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 2 -->
+        <div class="pitch-slide" data-slide="2">
+          <div class="slide-badge">02 • Grano del Modelo Dimensional</div>
+          <h3 class="slide-title">Definición Matemática del Grano de Hechos</h3>
+          
+          <div class="quote-box">
+            <div class="quote-icon">🎯</div>
+            <div class="quote-content">
+              <strong>Grano Seleccionado:</strong>
+              <p>"Una fila representa la compra de un producto o variante específica dentro de una línea de detalle de una orden de venta."</p>
+            </div>
+          </div>
+
+          <div class="two-columns">
+            <div class="detail-card">
+              <h4>❌ ¿Por qué NO a nivel encabezado de orden?</h4>
+              <ul>
+                <li>Se perdería el detalle de los productos y variantes compradas.</li>
+                <li>Imposibilitaría conocer el margen real por categoría, color, material o tamaño.</li>
+                <li>Dificultaría analizar qué productos generan mayor retraso logístico.</li>
+              </ul>
+            </div>
+            <div class="detail-card highlight-border">
+              <h4>✅ Ventajas del grano a nivel línea:</h4>
+              <ul>
+                <li>Conserva el nivel más granular de los datos operativos.</li>
+                <li>Permite agregar hacia arriba en cualquier dimensión sin pérdida de precisión.</li>
+                <li>Mantiene integridad en agregaciones mediante fórmulas de prorrateo exactas.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 3 -->
+        <div class="pitch-slide" data-slide="3">
+          <div class="slide-badge">03 • Fórmulas de Prorrateo & Reglas de Negocio</div>
+          <h3 class="slide-title">Resolución del Desafío de Métricas de Orden</h3>
+          <p class="slide-text">Al estar los descuentos y costos de flete a nivel orden completa, se distribuyen proporcionalmente por cada renglón para evitar duplicar montos al sumar:</p>
+
+          <div class="formula-cards">
+            <div class="formula-card">
+              <div class="formula-name">Descuento Prorrateado</div>
+              <div class="formula-code">(Subtotal Línea / Subtotal Total Orden) × Descuento Total</div>
+            </div>
+            <div class="formula-card">
+              <div class="formula-name">Envío Prorrateado</div>
+              <div class="formula-code">(Subtotal Línea / Subtotal Total Orden) × Envío Total</div>
+            </div>
+            <div class="formula-card">
+              <div class="formula-name">Venta Neta de la Línea</div>
+              <div class="formula-code">Subtotal - Descuento Prorrateado</div>
+            </div>
+            <div class="formula-card">
+              <div class="formula-name">Ganancia Bruta</div>
+              <div class="formula-code">Venta Neta - Costo Total</div>
+            </div>
+          </div>
+
+          <div class="meta-pill mt-3">
+            <span>⏱️ <strong>Métricas Logísticas:</strong> <code>dias_para_entrega = real - orden</code> | <code>retraso_dias = real - prometida</code> (&le;0 puntual, &gt;0 retraso)</span>
+          </div>
+        </div>
+
+        <!-- Slide 4 -->
+        <div class="pitch-slide" data-slide="4">
+          <div class="slide-badge">04 • Reto Empresarial de SQL (Unidad 3)</div>
+          <h3 class="slide-title">Top 5 Productos Rentables por Región (Q2 vs Q1 2026)</h3>
+          <p class="slide-text">Estructura de la consulta compleja desarrollada con CTEs y Funciones de Ventana:</p>
+
+          <div class="code-preview-block">
+            <pre><code><span class="kw">WITH</span> rentabilidad_trimestral <span class="kw">AS</span> (
+    <span class="kw">SELECT</span> s.zona <span class="kw">AS</span> region, p.producto_sk, p.nombre_producto,
+           <span class="fn">SUM</span>(<span class="kw">CASE WHEN</span> t.trimestre = 1 <span class="kw">THEN</span> f.ganancia_bruta <span class="kw">ELSE</span> 0 <span class="kw">END</span>) <span class="kw">AS</span> rentabilidad_q1,
+           <span class="fn">SUM</span>(<span class="kw">CASE WHEN</span> t.trimestre = 2 <span class="kw">THEN</span> f.ganancia_bruta <span class="kw">ELSE</span> 0 <span class="kw">END</span>) <span class="kw">AS</span> rentabilidad_q2
+    <span class="kw">FROM</span> Fact_Ventas f
+    <span class="kw">JOIN</span> Dim_Tiempo t <span class="kw">ON</span> f.fecha_orden_sk = t.fecha_sk
+    <span class="kw">JOIN</span> Dim_Producto p <span class="kw">ON</span> f.producto_sk = p.producto_sk
+    <span class="kw">JOIN</span> Dim_Showroom s <span class="kw">ON</span> f.showroom_sk = s.showroom_sk
+    <span class="kw">WHERE</span> t.anio = 2026 <span class="kw">AND</span> t.trimestre <span class="kw">IN</span> (1, 2)
+    <span class="kw">GROUP BY</span> s.zona, p.producto_sk, p.nombre_producto
+),
+ranking_region <span class="kw">AS</span> (
+    <span class="kw">SELECT</span> *, <span class="fn">DENSE_RANK</span>() <span class="fn">OVER</span> (<span class="kw">PARTITION BY</span> region <span class="kw">ORDER BY</span> rentabilidad_q2 <span class="kw">DESC</span>) <span class="kw">AS</span> top_num
+    <span class="kw">FROM</span> rentabilidad_trimestral
+)
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> ranking_region <span class="kw">WHERE</span> top_num &lt;= 5;</code></pre>
+          </div>
+        </div>
+
+        <!-- Slide 5 -->
+        <div class="pitch-slide" data-slide="5">
+          <div class="slide-badge">05 • Depuración, EXPLAIN & Stored Procedure</div>
+          <h3 class="slide-title">Evidencia de Optimización y Automatización</h3>
+          
+          <div class="two-columns">
+            <div class="detail-card">
+              <h4>🐞 Diagnóstico del Error 1055 (Agrupación Incompleta)</h4>
+              <p>Al seleccionar <code>nombre_producto</code> sin incluirlo en el <code>GROUP BY</code>, el motor estricto rechaza la consulta. Se resolvió agrupando explícitamente por todas las columnas dimensionales no agregadas.</p>
+            </div>
+            <div class="detail-card highlight-border">
+              <h4>⚡ Optimización con EXPLAIN & Índices B-Tree</h4>
+              <p>La creación de índices en las llaves foráneas (<code>fecha_orden_sk</code>, <code>showroom_sk</code>, <code>producto_sk</code>) reduce los escaneos secuenciales masivos (`Seq Scan`) acelerando los Hash Joins.</p>
+            </div>
+          </div>
+
+          <div class="card mt-3">
+            <div class="d-flex justify-between align-center">
+              <div>
+                <strong>Procedimiento Almacenado Parametrizado:</strong>
+                <span class="text-muted"><code>CALL sp_top5_rentabilidad_region(2026, 2, 1);</code></span>
+              </div>
+              <button class="btn btn-sm btn-primary" onclick="goToTab('tab-reto')">Ver Datos del Reporte ➔</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 2: EXPLORADOR DE TABLAS ==================== -->
+    <section id="tab-tablas" class="tab-panel">
+      <div class="panel-header">
+        <div>
+          <h2>📊 Explorador de Tablas del Data Mart</h2>
+          <p class="section-desc">Selecciona una tabla para explorar sus registros, tipos de datos y métricas en vivo.</p>
+        </div>
+        <div class="search-box">
+          <input type="text" id="table-search-input" placeholder="🔍 Filtrar registros en pantalla...">
+        </div>
+      </div>
+
+      <!-- Table Selector Chips -->
+      <div class="table-chips" id="table-chips-container">
+        <!-- Generated dynamically via JS -->
+      </div>
+
+      <!-- Active Table Info Bar -->
+      <div class="table-meta-bar">
+        <div>
+          <span class="font-bold" id="current-table-title">Fact_Ventas</span>
+          <span class="badge" id="current-table-badge">Cargando...</span>
+        </div>
+        <div class="table-pagination-controls">
+          <button class="btn btn-sm btn-outline" id="btn-page-prev">◀ Anterior</button>
+          <span id="page-indicator">Página 1</span>
+          <button class="btn btn-sm btn-outline" id="btn-page-next">Siguiente ▶</button>
+          <button class="btn btn-sm btn-secondary" id="btn-export-csv">📥 Exportar CSV</button>
+        </div>
+      </div>
+
+      <!-- Data Table Display -->
+      <div class="table-responsive" id="table-container">
+        <div class="loading-state">Cargando datos de la base de datos...</div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 3: RETO UNIDAD 3 (TOP 5 RENTABILIDAD) ==================== -->
+    <section id="tab-reto" class="tab-panel">
+      <div class="panel-header">
+        <div>
+          <h2>🏆 Reto Unidad 3: Top 5 Productos Más Rentables por Región</h2>
+          <p class="section-desc">Comparativa del Segundo Trimestre de 2026 frente al Primer Trimestre de 2026 con variación porcentual e indicadores de productos nuevos.</p>
+        </div>
+        <div class="filter-group">
+          <label for="filter-region-select">Filtrar por Región:</label>
+          <select id="filter-region-select" class="form-select">
+            <option value="ALL">Todas las Regiones</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Top 5 Stats Summary Cards -->
+      <div class="kpi-grid mb-3" id="reto-kpis">
+        <div class="kpi-card">
+          <div class="kpi-label">Regiones Analizadas</div>
+          <div class="kpi-value text-accent" id="kpi-total-regiones">5</div>
+          <div class="kpi-sub">Norte, Centro, Occidente, Sur, Bajío</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Rentabilidad Total Q2 2026</div>
+          <div class="kpi-value text-success" id="kpi-total-q2">$0.00</div>
+          <div class="kpi-sub">Suma de ganancia bruta en Q2</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Rentabilidad Total Q1 2026</div>
+          <div class="kpi-value" id="kpi-total-q1">$0.00</div>
+          <div class="kpi-sub">Suma de ganancia bruta en Q1</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Variación Global</div>
+          <div class="kpi-value" id="kpi-var-global">0.00%</div>
+          <div class="kpi-sub">Crecimiento de margen intertrimestral</div>
+        </div>
+      </div>
+
+      <!-- Top 5 Data Table -->
+      <div class="table-responsive" id="reto-table-container">
+        <div class="loading-state">Calculando agregaciones con CTEs y Window Functions...</div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 4: PLAYGROUND SQL & EXPLAIN ==================== -->
+    <section id="tab-playground" class="tab-panel">
+      <div class="panel-header">
+        <div>
+          <h2>⚡ Playground SQL & Análisis EXPLAIN</h2>
+          <p class="section-desc">Ejecuta consultas analíticas en vivo contra PostgreSQL o audita los planes de ejecución.</p>
+        </div>
+        <div class="d-flex gap-2">
+          <select id="sql-preset-select" class="form-select">
+            <option value="">-- Cargar Consulta Predefinida --</option>
+            <option value="reto">1. Reto Unidad 3: Top 5 Rentabilidad por Región (CTEs)</option>
+            <option value="error1055">2. Demostración de Error de Agrupación (Depuración)</option>
+            <option value="asesores">3. Comisiones y Rendimiento de Asesores</option>
+            <option value="logistica">4. Cumplimiento de Entregas y Días de Retraso</option>
+            <option value="categorias">5. Margen Bruto por Categoría y Colección</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="sql-editor-container">
+        <textarea id="sql-editor-input" placeholder="Escribe tu consulta SELECT o WITH aquí..."></textarea>
+        <div class="sql-editor-actions">
+          <button class="btn btn-primary" id="btn-run-sql">▶ Ejecutar Consulta</button>
+          <button class="btn btn-outline" id="btn-run-explain">🔍 EXPLAIN ANALYZE</button>
+          <span class="text-muted ml-auto" id="sql-time-indicator">Tiempo: -- ms</span>
+        </div>
+      </div>
+
+      <div class="query-results-container" id="query-results-container">
+        <div class="empty-state">Selecciona una consulta predefinida o escribe una para visualizar resultados.</div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 5: ESQUEMA ESTRELLA (ER) ==================== -->
+    <section id="tab-modelo" class="tab-panel">
+      <div class="panel-header">
+        <div>
+          <h2>📐 Arquitectura Dimensional del Data Mart</h2>
+          <p class="section-desc">Esquema Estrella implementado para Casa&Estilo centrado en el grano de línea de orden.</p>
+        </div>
+      </div>
+
+      <div class="star-schema-visual">
+        <!-- Center Fact Table -->
+        <div class="schema-center">
+          <div class="schema-node fact-node">
+            <div class="node-header">
+              <span class="node-badge">TABLA DE HECHOS</span>
+              <h3>Fact_Ventas</h3>
+            </div>
+            <div class="node-body">
+              <div class="node-grain"><strong>Grano:</strong> 1 fila = 1 variante en línea de detalle</div>
+              <ul class="node-list">
+                <li>🔑 <code>fact_venta_id</code> (PK)</li>
+                <li>🔗 <code>fecha_orden_sk</code> (FK)</li>
+                <li>🔗 <code>cliente_sk</code> (FK)</li>
+                <li>🔗 <code>producto_sk</code> (FK)</li>
+                <li>🔗 <code>showroom_sk</code> (FK)</li>
+                <li>🔗 <code>asesor_sk</code> (FK)</li>
+                <li>🔗 <code>canal_sk</code> (FK)</li>
+                <li>💰 <code>monto_venta_neta</code></li>
+                <li>📈 <code>ganancia_bruta</code></li>
+                <li>🚚 <code>dias_para_entrega</code>, <code>retraso_dias</code></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Surrounding Dimensions Grid -->
+        <div class="dimensions-grid">
+          <div class="schema-node dim-node">
+            <div class="node-header">
+              <span class="node-badge dim">DIMENSIÓN</span>
+              <h4>Dim_Tiempo</h4>
+            </div>
+            <p>1,095 días (2025-2027) con mes, día, trimestre y año.</p>
+          </div>
+
+          <div class="schema-node dim-node">
+            <div class="node-header">
+              <span class="node-badge dim">DIMENSIÓN</span>
+              <h4>Dim_Showroom</h4>
+            </div>
+            <p>8 puntos de venta físicos distribuidos por zona geográfica.</p>
+          </div>
+
+          <div class="schema-node dim-node">
+            <div class="node-header">
+              <span class="node-badge dim">DIMENSIÓN</span>
+              <h4>Dim_Producto</h4>
+            </div>
+            <p>20 variantes de productos (color, material, medidas, marcas).</p>
+          </div>
+
+          <div class="schema-node dim-node">
+            <div class="node-header">
+              <span class="node-badge dim">DIMENSIÓN</span>
+              <h4>Dim_Cliente</h4>
+            </div>
+            <p>25 clientes en 4 segmentos (Consumidor, Diseñador, Arquitecto, Corp).</p>
+          </div>
+
+          <div class="schema-node dim-node">
+            <div class="node-header">
+              <span class="node-badge dim">DIMENSIÓN</span>
+              <h4>Dim_Asesor</h4>
+            </div>
+            <p>8 asesores de venta con esquema de comisiones del 3.5% al 6%.</p>
+          </div>
+
+          <div class="schema-node dim-node">
+            <div class="node-header">
+              <span class="node-badge dim">DIMENSIÓN</span>
+              <h4>Dim_Canal</h4>
+            </div>
+            <p>4 canales (Showroom, E-commerce, WhatsApp Concierge, B2B).</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

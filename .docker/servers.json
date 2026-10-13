@@ -1,0 +1,13 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "Casa&Estilo Data Mart (PostgreSQL)",
+      "Group": "Equipo 8 - BI",
+      "Host": "postgres",
+      "Port": 5432,
+      "MaintenanceDB": "casa_estilo_bi",
+      "Username": "postgres",
+      "SSLMode": "prefer"
+    }
+  }
+}

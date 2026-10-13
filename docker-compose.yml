@@ -1,0 +1,58 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: casa_estilo_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: casa_estilo_bi
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - "./unidad_2/script dll.sql:/docker-entrypoint-initdb.d/01_ddl.sql:ro"
+      - "./unidad_2/script_datos_simulados.sql:/docker-entrypoint-initdb.d/02_datos.sql:ro"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d casa_estilo_bi"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  dashboard:
+    build:
+      context: ./dashboard
+    container_name: casa_estilo_dashboard
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_NAME: casa_estilo_bi
+      DB_USER: postgres
+      DB_PASSWORD: password
+    ports:
+      - "8080:8080"
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: casa_estilo_pgadmin
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PGADMIN_DEFAULT_EMAIL: equipo8@fime.uanl.mx
+      PGADMIN_DEFAULT_PASSWORD: password
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+      - "./.docker/servers.json:/pgadmin4/servers.json:ro"
+
+volumes:
+  pgdata:
+  pgadmin_data:

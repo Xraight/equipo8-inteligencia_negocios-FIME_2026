@@ -30,10 +30,15 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Test Unidad 2 DDL Script in Docker PostgreSQL
+      - name: Test Unidad 2 DDL and Seed Scripts in Docker PostgreSQL
         run: |
           if [ -f "unidad_2/script dll.sql" ]; then
+            echo "Validating unidad_2/script dll.sql..."
             PGPASSWORD=password psql -h localhost -U postgres -d casa_estilo_bi -f "unidad_2/script dll.sql"
+          fi
+          if [ -f "unidad_2/script_datos_simulados.sql" ]; then
+            echo "Validating unidad_2/script_datos_simulados.sql..."
+            PGPASSWORD=password psql -h localhost -U postgres -d casa_estilo_bi -f "unidad_2/script_datos_simulados.sql"
           fi
 
       - name: Test Unidad 3 DDL Scripts (if present)
