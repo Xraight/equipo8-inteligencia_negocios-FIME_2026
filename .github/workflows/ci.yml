@@ -1,0 +1,64 @@
+name: CI Pipeline - SQL & Schema Validation
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate-schema:
+    name: Validate PostgreSQL DDL & Scripts
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: casa_estilo_bi
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Test Unidad 2 DDL Script in Docker PostgreSQL
+        run: |
+          if [ -f "unidad_2/script dll.sql" ]; then
+            PGPASSWORD=password psql -h localhost -U postgres -d casa_estilo_bi -f "unidad_2/script dll.sql"
+          fi
+
+      - name: Test Unidad 3 DDL Scripts (if present)
+        run: |
+          for f in unidad_3/02_ddl_y_datos/*.sql; do
+            if [ -f "$f" ]; then
+              echo "Validating $f..."
+              PGPASSWORD=password psql -h localhost -U postgres -d casa_estilo_bi -f "$f"
+            fi
+          done
+
+      - name: Test Unidad 3 Stored Procedures (if present)
+        run: |
+          for f in unidad_3/06_stored_procedure/*.sql; do
+            if [ -f "$f" ]; then
+              echo "Validating $f..."
+              PGPASSWORD=password psql -h localhost -U postgres -d casa_estilo_bi -f "$f"
+            fi
+          done
+
+      - name: Test Unidad 3 SQL Queries (if present)
+        run: |
+          for f in unidad_3/04_consultas_sql/*.sql; do
+            if [ -f "$f" ]; then
+              echo "Validating $f..."
+              PGPASSWORD=password psql -h localhost -U postgres -d casa_estilo_bi -f "$f"
+            fi
+          done
