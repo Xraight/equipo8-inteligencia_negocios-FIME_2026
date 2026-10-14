@@ -1,14 +1,12 @@
-# 07 - Conclusión y Resultados de Negocio
+# 07 - Conclusiones, Hallazgos de Negocio y Presentación Oral
 
 ## 🎯 Objetivo General
-Sintetizar los resultados analíticos, hallazgos de inteligencia de negocios, evaluación técnica de rendimiento y conclusiones generales del proyecto en la Unidad 3.
+Sintetizar los resultados cuantitativos y cualitativos alcanzados en la Unidad 3 para **Casa&Estilo**, integrando el informe ejecutivo de rentabilidad regional, el balance metodológico sobre el uso de inteligencia artificial y la estructura de defensa oral de 5 minutos del equipo.
 
-## 📌 Función Específica
-- Documentar las respuestas a las preguntas estratégicas de Casa&Estilo (rendimiento comercial, márgenes, eficiencia logística).
-- Contrastar el modelo dimensional conceptual con los resultados obtenidos en las consultas analíticas reales.
-- Detallar las ventajas observadas a partir de la optimización con índices y planes de ejecución (`EXPLAIN`).
-- Resumir las lecciones aprendidas y recomendaciones para futuras fases de implementación de BI.
+---
 
-## 📦 Estructura Sugerida
-- `conclusion_final.md`: Informe analítico de conclusiones y recomendaciones.
-- `reporte_ejecutivo.pdf`: Presentación o reporte ejecutivo para stakeholders.
+## 📦 Contenido del Directorio
+
+| Archivo | Tipo | Descripción |
+|---|---|---|
+| [`conclusion_final.md`](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/unidad_3/07_conclusion/conclusion_final.md) | Informe Ejecutivo | Reporte de 1 página con hallazgos comerciales clave para Casa&Estilo, limitaciones del modelo, lecciones críticas del uso de IA y guión estructurado de la presentación oral de 5 minutos con distribución de roles. |

@@ -34,16 +34,43 @@ El repositorio se encuentra organizado por unidades temáticas para facilitar la
 │   └── README.md                       # Documentación de Unidad 2
 └── unidad_3/                           # Desarrollo técnico y analítico de Unidad 3
     ├── 01_modelo_unidad_2/             # Modelo dimensional base de Unidad 2
+    │   ├── Casa_Estilo_Diagrama_ER.drawio # Esquema estrella dimensional
+    │   ├── grano_y_diccionario_datos.md   # Grano de hechos y diccionario de dimensiones
+    │   ├── ficha_decisiones_negocio.md    # 5 preguntas de negocio y rentabilidad con flete
+    │   └── README.md
     ├── 02_ddl_y_datos/                 # Scripts DDL y datos de prueba / seeds
     │   ├── 01_ddl_schema.sql           # DDL idempotente del esquema estrella
-    │   ├── 02_carga_datos.sql          # Carga de datos simulados para análisis
+    │   ├── 02_carga_datos.sql          # Carga determinista de 1,250 filas (Q1 y Q2 2026)
+    │   ├── 03_verificacion_calidad_datos.sql # Auditoría de calidad, volumen y FKs
     │   └── README.md
     ├── 03_prompts_ia/                  # Registro de prompts e interacciones con IA
+    │   ├── 01_prompt_inicial_reto1.md  # Prompt obligatorio de Reto 1 y revisión crítica
+    │   ├── 02_prompt_error_agrupacion_1055.md # Reto 2: Diagnóstico de ONLY_FULL_GROUP_BY
+    │   ├── 03_prompt_optimizacion_explain.md  # Reto 3: Asesoría de índices y EXPLAIN
+    │   ├── 04_prompt_stored_procedure.md      # Reto 4: Parametrización en stored procedure
+    │   ├── registro_decisiones_ia.md   # Matriz de decisiones y evidencia técnica
+    │   └── README.md
     ├── 04_consultas_sql/               # Consultas analíticas y KPIs de negocio
-    ├── 05_validacion_y_explain/        # Planes de ejecución (EXPLAIN ANALYZE) y optimización
+    │   ├── 01_consulta_inicial_ia.sql  # Versión inicial sin validar de la IA
+    │   ├── 02_consulta_final_validada.sql # Consulta final validada Top 5 regional Q2 vs Q1
+    │   ├── 03_consultas_control_auditoria.sql # Pruebas de control de grano y muestra manual
+    │   ├── 04_diferencias_sintaxis_motores.sql # Equivalencias PostgreSQL 16 vs MySQL 8
+    │   └── README.md
+    ├── 05_validacion_y_explain/        # Planes de ejecución (EXPLAIN) y optimización
+    │   ├── 01_depuracion_error_1055.sql # Demostración y corrección de error 1055 / 42803
+    │   ├── reporte_depuracion_1055.md   # Reporte formal de causa raíz y estándar SQL
+    │   ├── 02_optimizacion_explain.sql  # Benchmarking con EXPLAIN ANALYZE antes y después
+    │   ├── reporte_optimizacion_explain.md # Comparativa de costos e índices compuestos
+    │   └── README.md
     ├── 06_stored_procedure/            # Procedimientos almacenados y funciones PL/pgSQL
+    │   ├── 01_sp_reporte_rentabilidad_top5.sql # Rutina parametrizada por año y trimestre
+    │   ├── 02_llamadas_de_prueba.sql   # Pruebas en escenario normal y caso límite
+    │   ├── documentacion_stored_procedure.md # Especificación técnica y evidencias de salida
+    │   └── README.md
     ├── 07_conclusion/                  # Conclusiones, hallazgos y reporte ejecutivo
-    └── README.md                       # Documentación general de Unidad 3
+    │   ├── conclusion_final.md         # Informe ejecutivo, juicio crítico y guión oral 5 min
+    │   └── README.md
+    └── README.md                       # Índice maestro de Unidad 3
 ```
 
 ---

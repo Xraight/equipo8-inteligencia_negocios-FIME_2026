@@ -1,14 +1,16 @@
-# 03 - Prompts de Inteligencia Artificial
+# 03 - Prompts de Inteligencia Artificial y Registro Metodológico
 
 ## 🎯 Objetivo General
-Registrar y documentar de manera estructurada los prompts, instrucciones y cadenas de pensamiento utilizadas con modelos de inteligencia artificial para asistir en el desarrollo, optimización y análisis del Data Mart.
+Documentar formalmente el proceso de ingeniería de prompts, las respuestas generadas por los modelos de IA, las iteraciones técnicas y el juicio crítico del equipo humano para el desarrollo de las actividades analíticas de la Unidad 3.
 
-## 📌 Función Específica
-- Documentar las entradas (prompts) proporcionadas a los modelos de lenguaje (roles, contexto del negocio Casa&Estilo, esquema estrella, restricciones técnicas).
-- Registrar los resultados generados (código SQL, sugerencias de índices, funciones analíticas) y las iteraciones realizadas.
-- Proporcionar trazabilidad académica y metodológica sobre el uso de herramientas de IA generativa en la materia.
+---
 
-## 📦 Estructura Sugerida
-- `prompts_consultas.md`: Prompts orientados a formulación de queries de negocio.
-- `prompts_optimizacion.md`: Prompts orientados al análisis de rendimiento y planes `EXPLAIN`.
-- `prompts_stored_procedures.md`: Prompts para el diseño de funciones y procedimientos.
+## 📦 Contenido del Directorio
+
+| Archivo | Reto Asociado | Descripción |
+|---|---|---|
+| [`01_prompt_inicial_reto1.md`](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/unidad_3/03_prompts_ia/01_prompt_inicial_reto1.md) | Reto 1 | Prompt estructurado bajo la plantilla obligatoria, propuesta inicial de la IA, auditoría crítica del equipo y corrección de la fórmula de rentabilidad con flete y grano por producto. |
+| [`02_prompt_error_agrupacion_1055.md`](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/unidad_3/03_prompts_ia/02_prompt_error_agrupacion_1055.md) | Reto 2 | Diagnóstico asistido por IA del error de agrupación incompleta `ONLY_FULL_GROUP_BY` (MySQL 1055 / PostgreSQL 42803) y justificación de grano. |
+| [`03_prompt_optimizacion_explain.md`](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/unidad_3/03_prompts_ia/03_prompt_optimizacion_explain.md) | Reto 3 | Asesoría de optimización sobre el plan `EXPLAIN`, propuesta de índices B-Tree compuestos y reescritura analítica Single-Pass. |
+| [`04_prompt_stored_procedure.md`](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/unidad_3/03_prompts_ia/04_prompt_stored_procedure.md) | Reto 4 | Parametrización de la lógica en rutinas almacenadas reutilizables con cálculo dinámico del trimestre anterior y control de bordes. |
+| [`registro_decisiones_ia.md`](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/unidad_3/03_prompts_ia/registro_decisiones_ia.md) | Transversal | Matriz consolidada de propuestas de IA, decisiones del equipo y evidencia técnica que sustenta la aceptación o descarte. |

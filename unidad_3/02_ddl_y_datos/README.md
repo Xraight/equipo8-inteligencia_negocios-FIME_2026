@@ -1,57 +1,46 @@
-# 02 - DDL y Datos
+# 02 - DDL del Esquema y Carga de Datos Simulados
 
 ## 🎯 Objetivo General
-Centralizar la definición de datos (DDL) y los scripts de inserción o generación de datos de prueba (DML / Seeds) requeridos para alimentar el Data Mart de **Casa&Estilo** en PostgreSQL 16.
+Suministrar los scripts DDL de creación física del esquema estrella y la población determinista de datos simulados para el Data Mart de **Casa&Estilo**, asegurando una base de datos reproducible y ejecutable en contenedores Docker y en el pipeline de CI/CD.
 
 ---
 
-## 📌 Función Específica de los Módulos
-
-### 1. `01_ddl_schema.sql` (Definición de Datos Idempotente)
-- **Función General:** Crea la estructura física del esquema estrella (`Dim_Tiempo`, `Dim_Cliente`, `Dim_Producto`, `Dim_Showroom`, `Dim_Asesor`, `Dim_Canal` y `Fact_Ventas`).
-- **Funciones Específicas:**
-  - Garantiza compatibilidad e idempotencia mediante cláusulas `CREATE TABLE IF NOT EXISTS`.
-  - Establece claves primarias subrogadas (`_sk`), claves de negocio (`_bk`) e integridad referencial foránea.
-  - Genera índices B-Tree (`CREATE INDEX IF NOT EXISTS`) sobre llaves foráneas de la tabla de hechos para acelerar operaciones de agregación y uniones dimensionales.
-
-### 2. `02_carga_datos.sql` (Población de Datos Simulados)
-- **Función General:** Carga registros sintéticos representativos diseñados para pruebas analíticas (OLAP), validación de planes de ejecución (`EXPLAIN`) y procedimientos almacenados.
-- **Funciones Específicas:**
-  - **Reinicio Limpio:** Ejecuta `TRUNCATE ... RESTART IDENTITY CASCADE` para evitar duplicidad o desbordamiento de identificadores.
-  - **Dimensión Tiempo:** Genera 1,096 días (2025-2027) con atributos en español y trimestres analíticos.
-  - **Catálogo y Geografía:** Modela 8 showrooms en México, 8 asesores con comisiones, 25 clientes multiclase y 20 variantes de productos en 6 categorías de muebles y decoración.
-  - **Prorrateo Matemático Exacto:** Distribuye los descuentos globales y costos de envío a nivel línea de orden en base al peso monetario del renglón sobre el subtotal total de la orden.
-  - **Métricas de Cumplimiento Logístico:** Calcula días transcurridos para entrega y desvíos respecto a la fecha prometida (`retraso_dias`), reflejando escenarios reales de productos en stock vs sobre pedido.
-
----
-
-## 📦 Archivos Implementados
+## 📦 Contenido del Directorio
 
 | Archivo | Tipo | Descripción |
 |---|---|---|
-| [`01_ddl_schema.sql`](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/unidad_3/02_ddl_y_datos/01_ddl_schema.sql) | SQL (DDL) | Creación idempotente de tablas dimensionales, tabla de hechos e índices. |
-| [`02_carga_datos.sql`](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/unidad_3/02_ddl_y_datos/02_carga_datos.sql) | SQL (DML) | Inserción determinista de dimensiones y hechos con fórmulas de prorrateo. |
+| [`01_ddl_schema.sql`](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/unidad_3/02_ddl_y_datos/01_ddl_schema.sql) | DDL SQL | Script de creación idempotente de las 6 dimensiones y la tabla de hechos con claves primarias, foráneas e índices base en PostgreSQL 16. |
+| [`02_carga_datos.sql`](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/unidad_3/02_ddl_y_datos/02_carga_datos.sql) | DML SQL | Población determinista de 1,250 filas en `Fact_Ventas` y dimensiones maestras con fórmulas de prorrateo de descuentos y costos de flete. |
+| [`03_verificacion_calidad_datos.sql`](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/unidad_3/02_ddl_y_datos/03_verificacion_calidad_datos.sql) | Auditoría SQL | Consultas automatizadas que certifican integridad referencial, volumen (>1000 filas), cobertura Q1/Q2 2026 y ausencia de inconsistencias matemáticas. |
 
 ---
 
-## 🐳 Ejecución en Docker
+## 📋 Requisitos Cumplidos (Rúbrica Unidad 3)
 
-Siguiendo la política de reproducibilidad e independencia del sistema anfitrión:
+| Aspecto | Requisito de Rúbrica | Estado en Casa&Estilo | Evidencia |
+|---|---|---|---|
+| **Periodos** | Dos trimestres consecutivos completos | ✅ Cumple | $Q_1$ 2026 (621 filas, Ene-Mar) y $Q_2$ 2026 (629 filas, Abr-Jun). |
+| **Cobertura Regional** | Al menos tres regiones con suficientes productos | ✅ Cumple (5 regiones) | Norte (15 variantes), Centro (10), Sur (5), Bajío (5), Occidente (5). |
+| **Volumen** | Mínimo 1,000 filas en tabla de hechos | ✅ Cumple | 1,250 filas generadas en `Fact_Ventas`. |
+| **Integridad** | Claves foráneas válidas y montos coherentes | ✅ Cumple | 0 huérfanos, subtotales y costos validados contra cantidades unitarias. |
+| **Particularidad** | Considerar costo de entrega/instalación | ✅ Cumple | `monto_envio_prorrateado` integrado a nivel línea. |
+
+---
+
+## 🐳 Instrucciones de Ejecución con Docker
+
+Para reproducir la base de datos en un entorno limpio sin instalar herramientas en el sistema operativo:
 
 ```bash
-# Iniciar contenedor temporal de PostgreSQL 16
-docker run --name pg-casa-estilo -e POSTGRES_PASSWORD=password -e POSTGRES_DB=casa_estilo_bi -p 5432:5432 -d postgres:16-alpine
+# 1. Iniciar el servicio PostgreSQL con Docker Compose
+docker compose up -d postgres
 
-# Ejecutar DDL e inserción de datos en orden
-docker exec -i pg-casa-estilo psql -U postgres -d casa_estilo_bi < "unidad_3/02_ddl_y_datos/01_ddl_schema.sql"
-docker exec -i pg-casa-estilo psql -U postgres -d casa_estilo_bi < "unidad_3/02_ddl_y_datos/02_carga_datos.sql"
+# 2. Ejecutar la creación de tablas
+docker exec -i casa_estilo_postgres psql -U postgres -d casa_estilo_bi < "unidad_3/02_ddl_y_datos/01_ddl_schema.sql"
 
-# Comprobar estado de la base de datos
-docker exec -i pg-casa-estilo psql -U postgres -d casa_estilo_bi -c "SELECT COUNT(*) FROM Fact_Ventas;"
+# 3. Poblar los datos simulados
+docker exec -i casa_estilo_postgres psql -U postgres -d casa_estilo_bi < "unidad_3/02_ddl_y_datos/02_carga_datos.sql"
+
+# 4. Validar la calidad de los datos cargados
+docker exec -i casa_estilo_postgres psql -U postgres -d casa_estilo_bi < "unidad_3/02_ddl_y_datos/03_verificacion_calidad_datos.sql"
 ```
-
----
-
-## 🔄 Integración con CI/CD
-
-Estos scripts son validados automáticamente en el flujo de GitHub Actions ([`.github/workflows/ci.yml`](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/.github/workflows/ci.yml)) en cada push y pull request hacia la rama `main`, garantizando que la estructura y los datos se carguen sin errores de sintaxis o violaciones de integridad referencial.

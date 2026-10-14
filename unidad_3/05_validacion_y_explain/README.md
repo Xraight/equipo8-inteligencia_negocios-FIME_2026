@@ -1,16 +1,15 @@
-# 05 - Validación y EXPLAIN (Optimización y Performance)
+# 05 - Validación, Depuración (Error 1055) y Optimización (EXPLAIN)
 
 ## 🎯 Objetivo General
-Analizar, documentar y validar el rendimiento de las consultas analíticas del Data Mart mediante planes de ejecución de PostgreSQL (`EXPLAIN` y `EXPLAIN ANALYZE`).
+Documentar la resolución práctica de los retos técnicos de **depuración de errores de agregación (Reto 2)** y **optimización de rendimiento de consultas OLAP (Reto 3)** mediante planes de ejecución reales generados por el motor de base de datos.
 
-## 📌 Función Específica
-- Evaluar el costo computacional (`Total Cost`, `Execution Time`, `Planning Time`) de las consultas analíticas más demandantes.
-- Identificar cuellos de botella como escaneos secuenciales masivos (`Seq Scan`) en tablas grandes.
-- Proponer e implementar estrategias de indexación (índices B-Tree, índices compuestos, índices parciales) y comparar el antes vs. después del plan de ejecución.
-- Validar la consistencia y precisión de los resultados arrojados por las consultas frente a los datos esperados.
+---
 
-## 📦 Estructura Sugerida
-- `reporte_explain_analisis.md`: Comparativa de planes de ejecución antes y después de optimizaciones.
-- `01_explain_consultas_base.sql`: Salidas de `EXPLAIN ANALYZE` sobre consultas sin indexar.
-- `02_indices_optimizacion.sql`: Scripts DDL de índices creados para mejorar los tiempos de respuesta.
-- `03_explain_consultas_optimizadas.sql`: Salidas de `EXPLAIN ANALYZE` posteriores a la optimización.
+## 📦 Contenido del Directorio
+
+| Archivo | Tipo | Descripción |
+|---|---|---|
+| [`01_depuracion_error_1055.sql`](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/unidad_3/05_validacion_y_explain/01_depuracion_error_1055.sql) | SQL Depuración | Script ejecutable que captura controladamente el error de agrupación incompleta (`ONLY_FULL_GROUP_BY` / SQLSTATE 42803) y ejecuta la versión corregida conforme al grano. |
+| [`reporte_depuracion_1055.md`](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/unidad_3/05_validacion_y_explain/reporte_depuracion_1055.md) | Documento Técnico | Reporte con los mensajes textuales de error en MySQL 8 y PostgreSQL 16, análisis de la causa raíz en el estándar SQL y justificación de la nueva agrupación. |
+| [`02_optimizacion_explain.sql`](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/unidad_3/05_validacion_y_explain/02_optimizacion_explain.sql) | SQL Benchmarking | Scripts de `EXPLAIN (ANALYZE, BUFFERS)`, creación de índices B-Tree compuestos y consulta reescrita a una sola pasada (Single-Pass). |
+| [`reporte_optimizacion_explain.md`](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/unidad_3/05_validacion_y_explain/reporte_optimizacion_explain.md) | Documento Técnico | Comparativa detallada del plan de ejecución antes vs. después, demostrando una reducción del 76.9% en costo de escaneo y 50% en lectura de filas de hechos. |
