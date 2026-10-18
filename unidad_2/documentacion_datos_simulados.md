@@ -64,26 +64,38 @@ Su objetivo es suministrar un conjunto de datos analíticos realistas que permit
 La población de la tabla de hechos sigue estrictamente las fórmulas del diseño dimensional documentado en la Práctica de Unidad 2:
 
 ### 3.1. Grano
-$$\text{Una fila} = \text{Un producto o variante específica dentro de una línea de detalle de una orden de venta.}$$
+> **Definición de Grano:**  
+> *"Una fila representa un producto o variante específica dentro de una línea de detalle de una orden de venta."*
 
 ### 3.2. Métricas Aditivas Base
-$$\text{monto\_subtotal} = \text{cantidad} \times \text{precio\_unitario}$$
-$$\text{monto\_costo\_total} = \text{cantidad} \times \text{costo\_unitario}$$
+$$\text{Monto Subtotal} = \text{Cantidad} \times \text{Precio Unitario}$$
+> *Equivalencia SQL:* `monto_subtotal = cantidad * precio_unitario`
+
+$$\text{Costo Mercancía Total} = \text{Cantidad} \times \text{Costo Unitario}$$
+> *Equivalencia SQL:* `monto_costo_total = cantidad * costo_unitario`
 
 ### 3.3. Fórmulas de Prorrateo a Nivel Línea de Orden
 Cuando una orden contiene múltiples renglones, el descuento global y el costo de flete/envío se distribuyen proporcionalmente al valor monetario de cada renglón:
 
-$$\text{Descuento Prorrateado} = \left(\frac{\text{monto\_subtotal de la línea}}{\text{subtotal total de la orden}}\right) \times \text{Descuento Total de la Orden}$$
+$$\text{Descuento Prorrateado} = \left(\frac{\text{Subtotal de la Línea}}{\text{Subtotal Total de la Orden}}\right) \times \text{Descuento Total de la Orden}$$
+> *Equivalencia SQL:* `monto_descuento_prorrateado = (monto_subtotal / orden_subtotal) * orden_descuento_total`
 
-$$\text{Envío Prorrateado} = \left(\frac{\text{monto\_subtotal de la línea}}{\text{subtotal total de la orden}}\right) \times \text{Envío Total de la Orden}$$
+$$\text{Envío Prorrateado} = \left(\frac{\text{Subtotal de la Línea}}{\text{Subtotal Total de la Orden}}\right) \times \text{Envío Total de la Orden}$$
+> *Equivalencia SQL:* `monto_envio_prorrateado = (monto_subtotal / orden_subtotal) * orden_envio_total`
 
 ### 3.4. Métricas Derivadas
-$$\text{monto\_venta\_neta} = \text{monto\_subtotal} - \text{monto\_descuento\_prorrateado}$$
-$$\text{ganancia\_bruta} = \text{monto\_venta\_neta} - \text{monto\_costo\_total}$$
+$$\text{Venta Neta} = \text{Monto Subtotal} - \text{Descuento Prorrateado}$$
+> *Equivalencia SQL:* `monto_venta_neta = monto_subtotal - monto_descuento_prorrateado`
+
+$$\text{Ganancia Bruta} = \text{Venta Neta} - \text{Costo Mercancía}$$
+> *Equivalencia SQL:* `ganancia_bruta = monto_venta_neta - monto_costo_total`
 
 ### 3.5. Métricas de Desempeño Logístico
-$$\text{dias\_para\_entrega} = \text{fecha\_real\_entrega} - \text{fecha\_orden}$$
-$$\text{retraso\_dias} = \text{fecha\_real\_entrega} - \text{fecha\_prometida}$$
+$$\text{Días para Entrega} = \text{Fecha Real Entrega} - \text{Fecha Orden}$$
+> *Equivalencia SQL:* `dias_para_entrega = fecha_real_entrega - fecha_orden`
+
+$$\text{Retraso en Días} = \text{Fecha Real Entrega} - \text{Fecha Prometida}$$
+> *Equivalencia SQL:* `retraso_dias = fecha_real_entrega - fecha_prometida`
 
 *Interpretación de `retraso_dias`:*
 - $\le 0$: Entrega realizada a tiempo o anticipada (cumplimiento exitoso).

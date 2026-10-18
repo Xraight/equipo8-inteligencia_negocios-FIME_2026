@@ -26,16 +26,22 @@ Antes de redactar el código SQL, el equipo analizó y consensuó las siguientes
 
 ### 2. ¿Qué columna representa ventas netas y qué columna representa costo?
 * **Ventas Netas:** `Fact_Ventas.monto_venta_neta`.
-  $$\text{monto\_venta\_neta} = \text{monto\_subtotal} - \text{monto\_descuento\_prorrateado}$$
+  $$\text{Venta Neta} = \text{Monto Subtotal} - \text{Descuento Prorrateado}$$
+  > *Equivalencia SQL:* `monto_venta_neta = monto_subtotal - monto_descuento_prorrateado`
+  
   Representa el ingreso real percibido por la empresa tras descontar promociones directas aplicadas a la orden.
 * **Costo Directo de Producto:** `Fact_Ventas.monto_costo_total`.
-  $$\text{monto\_costo\_total} = \text{cantidad} \times \text{costo\_unitario}$$
+  $$\text{Costo Total} = \text{Cantidad} \times \text{Costo Unitario}$$
+  > *Equivalencia SQL:* `monto_costo_total = cantidad * costo_unitario`
 * **Costo Específico de Caso para Casa&Estilo (Entrega e Instalación):** `Fact_Ventas.monto_envio_prorrateado`.
   De acuerdo con la especificación de la práctica: *"Casa&Estilo: Rentabilidad considerando entrega o instalación cuando esos costos formen parte del modelo"*.
   Por lo tanto, la métrica oficial de **Rentabilidad Neta Operativa** utilizada en el reporte es:
-  $$\text{Rentabilidad} = \text{monto\_venta\_neta} - \text{monto\_costo\_total} - \text{monto\_envio\_prorrateado}$$
+  $$\text{Rentabilidad} = \text{Venta Neta} - \text{Costo Total} - \text{Envío Prorrateado}$$
+  > *Equivalencia SQL:* `Rentabilidad = monto_venta_neta - monto_costo_total - monto_envio_prorrateado`
+  
   O de manera equivalente:
-  $$\text{Rentabilidad} = \text{ganancia\_bruta} - \text{monto\_envio\_prorrateado}$$
+  $$\text{Rentabilidad} = \text{Ganancia Bruta} - \text{Envío Prorrateado}$$
+  > *Equivalencia SQL:* `Rentabilidad = ganancia_bruta - monto_envio_prorrateado`
 
 ### 3. ¿Cómo se excluirán o ajustarán las ventas canceladas y las devoluciones?
 * **Regla de Negocio:** En el diseño dimensional de Casa&Estilo, las transacciones registradas en `Fact_Ventas` corresponden a órdenes en firme formalizadas en punto de venta o pasarela e-commerce.
@@ -61,8 +67,10 @@ Antes de redactar el código SQL, el equipo analizó y consensuó las siguientes
 
 ### 5. ¿Cómo comprobarán que cada región devuelve como máximo cinco productos?
 * **Mecanismo de Ventana:**
-  Se calcula la función analítica:
-  $$\text{posicion\_region} = \text{DENSE\_RANK}() \text{ OVER } (\text{PARTITION BY } \text{region} \text{ ORDER BY } \text{rentabilidad\_q2} \text{ DESC})$$
+  Se calcula la función analítica particionada por región:
+  ```sql
+  posicion_region = DENSE_RANK() OVER (PARTITION BY region ORDER BY rentabilidad_q2 DESC)
+  ```
   (o `ROW_NUMBER()` para desempates estrictos).
 * **Filtro de Corte:** En la cláusula exterior se filtra estrictamente `WHERE posicion_region <= 5`.
 * **Auditoría de Control:** Se incluye una consulta de verificación automatizada:
@@ -84,10 +92,10 @@ Antes de redactar el código SQL, el equipo analizó y consensuó las siguientes
 | 2 | `posicion_region` | `INT / BIGINT` | `DENSE_RANK() OVER (PARTITION BY region ORDER BY rentabilidad_q2 DESC)` |
 | 3 | `producto_id_bk` | `INT` | Clave de negocio del producto (`Dim_Producto.producto_id_bk`) |
 | 4 | `nombre_producto` | `VARCHAR` | `Dim_Producto.nombre_producto` |
-| 5 | `rentabilidad_q2_2026` | `NUMERIC(14,2)` | $\sum (\text{venta\_neta} - \text{costo\_total} - \text{envio\_prorrateado})$ en Q2 |
-| 6 | `rentabilidad_q1_2026` | `NUMERIC(14,2)` | $\sum (\text{venta\_neta} - \text{costo\_total} - \text{envio\_prorrateado})$ en Q1 |
-| 7 | `variacion_absoluta` | `NUMERIC(14,2)` | $\text{rentabilidad}_{Q2} - \text{COALESCE}(\text{rentabilidad}_{Q1}, 0)$ |
-| 8 | `variacion_porcentual` | `NUMERIC(7,2)` | $((\text{rentabilidad}_{Q2} - \text{rentabilidad}_{Q1}) / |\text{rentabilidad}_{Q1}|) * 100$ |
+| 5 | `rentabilidad_q2_2026` | `NUMERIC(14,2)` | `SUM(monto_venta_neta - monto_costo_total - monto_envio_prorrateado)` en Q2 |
+| 6 | `rentabilidad_q1_2026` | `NUMERIC(14,2)` | `SUM(monto_venta_neta - monto_costo_total - monto_envio_prorrateado)` en Q1 |
+| 7 | `variacion_absoluta` | `NUMERIC(14,2)` | `rentabilidad_q2 - COALESCE(rentabilidad_q1, 0.00)` |
+| 8 | `variacion_porcentual` | `NUMERIC(7,2)` | `((rentabilidad_q2 - rentabilidad_q1) / ABS(rentabilidad_q1)) * 100` |
 | 9 | `indicador_periodo_anterior` | `VARCHAR(50)` | Etiqueta cualitativa ('Crecimiento', 'Decrecimiento', 'Nuevo...') |
 
 ---
