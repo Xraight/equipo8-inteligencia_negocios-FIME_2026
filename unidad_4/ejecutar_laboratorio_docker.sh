@@ -7,6 +7,16 @@
 
 set -e
 
+# ==============================================================================
+# RESOLUCIÓN DINÁMICA DEL ENTORNO DE EJECUCIÓN (PORTABILIDAD)
+# Permite ejecutar el script sin importar el CWD actual:
+# - Desde raíz: ./unidad_4/ejecutar_laboratorio_docker.sh
+# - Desde unidad_4: cd unidad_4 && ./ejecutar_laboratorio_docker.sh
+# ==============================================================================
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+cd "${REPO_ROOT}"
+
 CONTAINER_NAME="casa_estilo_mysql"
 DB_NAME="tienda_bi"
 DB_USER="root"

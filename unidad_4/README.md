@@ -161,8 +161,15 @@ Se generaron las métricas de pedidos entregados y ventas netas agrupadas por es
 ## 🚀 6. Guía Rápida de Ejecución
 
 ### Opción 1: Ejecución Total Automatizada en Docker (Recomendada)
+El script resuelve dinámicamente las rutas absolutas y la raíz del proyecto, por lo que puede ejecutarse tanto desde la raíz del repositorio como directamente dentro de la carpeta `unidad_4`:
+
 ```bash
+# Opción A: Desde la raíz del repositorio
 ./unidad_4/ejecutar_laboratorio_docker.sh
+
+# Opción B: Desde el interior de la carpeta unidad_4
+cd unidad_4
+./ejecutar_laboratorio_docker.sh
 ```
 
 ### Opción 2: Ejecución del Script Maestro en MySQL Workbench / CLI
