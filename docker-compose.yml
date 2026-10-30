@@ -53,6 +53,26 @@ services:
       - pgadmin_data:/var/lib/pgadmin
       - "./.docker/servers.json:/pgadmin4/servers.json:ro"
 
+  mysql:
+    image: mysql:8.0
+    container_name: casa_estilo_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: tienda_bi
+      MYSQL_USER: equipo8
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysqldata:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ppassword"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
 volumes:
   pgdata:
   pgadmin_data:
+  mysqldata:

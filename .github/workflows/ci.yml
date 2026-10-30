@@ -67,3 +67,46 @@ jobs:
               PGPASSWORD=password psql -h localhost -U postgres -d casa_estilo_bi -f "$f"
             fi
           done
+
+  validate-etl-mysql:
+    name: Validate MySQL 8.0 ETL Pipeline (Unidad 4)
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: tienda_bi
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -u root -ppassword"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Test Unidad 4 Master ETL Script in MySQL 8.0
+        run: |
+          if [ -f "unidad_4/script_maestro_etl.sql" ]; then
+            echo "Validating unidad_4/script_maestro_etl.sql..."
+            mysql -h 127.0.0.1 -P 3306 -u root -ppassword tienda_bi < "unidad_4/script_maestro_etl.sql"
+          fi
+
+      - name: Test Unidad 4 Modular Scripts in Sequential Execution
+        run: |
+          echo "Validating modular steps..."
+          mysql -h 127.0.0.1 -P 3306 -u root -ppassword < "unidad_4/01_datos_crudos/01_creacion_bd.sql"
+          mysql -h 127.0.0.1 -P 3306 -u root -ppassword tienda_bi < "unidad_4/01_datos_crudos/02_carga_datos_iniciales.sql"
+          mysql -h 127.0.0.1 -P 3306 -u root -ppassword tienda_bi < "unidad_4/01_datos_crudos/pedidos.sql"
+          mysql -h 127.0.0.1 -P 3306 -u root -ppassword tienda_bi < "unidad_4/02_perfilado/01_perfilado_datos.sql"
+          mysql -h 127.0.0.1 -P 3306 -u root -ppassword tienda_bi < "unidad_4/03_staging_y_normalizacion/02_staging_y_normalizacion.sql"
+          mysql -h 127.0.0.1 -P 3306 -u root -ppassword tienda_bi < "unidad_4/04_validacion_y_rechazos/03_validacion_y_rechazos.sql"
+          mysql -h 127.0.0.1 -P 3306 -u root -ppassword tienda_bi < "unidad_4/05_carga_incremental/04_carga_incremental_upsert.sql"
+          mysql -h 127.0.0.1 -P 3306 -u root -ppassword tienda_bi < "unidad_4/06_conciliacion_auditoria/05_conciliacion_auditoria.sql"
+          mysql -h 127.0.0.1 -P 3306 -u root -ppassword tienda_bi < "unidad_4/07_indicadores/06_indicadores_negocio.sql"
+          echo "✅ All Unidad 4 MySQL 8.0 scripts passed successfully!"

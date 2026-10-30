@@ -71,6 +71,18 @@ El repositorio se encuentra organizado por unidades temáticas para facilitar la
     │   ├── conclusion_final.md         # Informe ejecutivo, juicio crítico y guión oral 5 min
     │   └── README.md
     └── README.md                       # Índice maestro de Unidad 3
+└── unidad_4/                           # Laboratorio ETL: Del Archivo Crudo al Data Mart (MySQL 8.0)
+    ├── 01_datos_crudos/                # DDL base, catálogo canónico y archivos crudos (pedidos/clientes)
+    ├── 02_perfilado/                   # Detección de anomalías y tabla observaciones_perfilado
+    ├── 03_staging_y_normalizacion/     # Normalización estatal canónica y tipado estricto DATE
+    ├── 04_validacion_y_rechazos/       # Reglas de negocio, mesa de rechazos (cuarentena) y pedidos limpios
+    ├── 05_carga_incremental/          # DDL del Data Mart y UPSERT con verificación de idempotencia
+    ├── 06_conciliacion_auditoria/      # Balance de masa (raw = limpias + rechazadas) y etl_auditoria
+    ├── 07_indicadores/                 # Ventas netas y entregas por estado y fecha
+    ├── 08_reflexion/                   # Reflexión técnica sobre decisiones de limpieza
+    ├── script_maestro_etl.sql          # Pipeline unificado reproducible de inicio a fin
+    ├── ejecutar_laboratorio_docker.sh  # Script de ejecución automatizada en Docker
+    └── README.md                       # Índice maestro de Unidad 4
 ```
 
 ---
@@ -90,6 +102,17 @@ Estructurada en 7 fases especializadas:
 5. [`05_validacion_y_explain`](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/unidad_3/05_validacion_y_explain/README.md): Auditoría de desempeño, métricas de ejecución y optimización con índices.
 6. [`06_stored_procedure`](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/unidad_3/06_stored_procedure/README.md): Funciones PL/pgSQL y procedimientos almacenados para lógica recurrente.
 7. [`07_conclusion`](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/unidad_3/07_conclusion/README.md): Resumen ejecutivo, respuestas a los objetivos comerciales y aprendizajes.
+
+### 🔹 [Unidad 4: Laboratorio ETL - Del Archivo Crudo al Data Mart](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/unidad_4/README.md)
+- **Función General:** Construcción de un pipeline ETL completo, reproducible e idempotente en MySQL 8.0 para migrar archivos crudos con anomalías intencionales (`clientes.csv`, `pedidos.sql`, `catalogo_estados.csv`) hacia un Data Mart gobernado.
+- **Entregables:**
+  - Diagnóstico sistemático de calidad de datos (`observaciones_perfilado`).
+  - Staging inmutable y normalización estatal canónica (`stg_clientes`, `stg_pedidos`).
+  - Mesa de rechazos en cuarentena con trazabilidad técnica (`pedidos_rechazados`).
+  - Carga incremental mediante UPSERT con demostración matemática de idempotencia (`fact_ordenes`).
+  - Bitácora de balance de masa y conciliación financiera (`etl_auditoria`).
+  - Reportes de indicadores comerciales (Ventas netas y pedidos entregados).
+  - Análisis crítico fundamentado sobre decisiones de limpieza y reglas de negocio.
 
 ---
 
