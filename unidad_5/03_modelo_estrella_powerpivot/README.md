@@ -4,8 +4,10 @@ Este módulo documenta la arquitectura dimensional del **Data Mart**, la configu
 
 ---
 
-## 📑 Documentos del Módulo
+## 📑 Documentos y Herramientas del Módulo
 
+- [`guia_paso_a_paso_powerpivot_excel365.md`](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/unidad_5/03_modelo_estrella_powerpivot/guia_paso_a_paso_powerpivot_excel365.md): Guía paso a paso y playbook maestro para inicializar y verificar el modelo nativo de Power Pivot en Excel 365 (Windows).
+- [`construir_modelo_powerpivot.bas`](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/unidad_5/03_modelo_estrella_powerpivot/construir_modelo_powerpivot.bas): Módulo de macro VBA para automatizar la creación del modelo Power Pivot, relaciones 1:N y medidas DAX en un solo clic.
 - [`modelo_dimensional_estrella.md`](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/unidad_5/03_modelo_estrella_powerpivot/modelo_dimensional_estrella.md): Especificación del esquema estrella, cardinalidades 1:N, diagnóstico de relaciones y directrices de inteligencia de tiempo.
 
 ---

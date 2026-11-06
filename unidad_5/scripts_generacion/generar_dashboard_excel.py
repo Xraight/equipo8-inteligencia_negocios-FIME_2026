@@ -13,6 +13,7 @@ import openpyxl
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
 from openpyxl.chart import BarChart, LineChart, Reference, Series
+from openpyxl.worksheet.table import Table, TableStyleInfo
 
 def crear_dashboard_excel():
     base_dir = Path(__file__).resolve().parent.parent
@@ -411,6 +412,11 @@ def crear_dashboard_excel():
         col_letter = get_column_letter(c)
         ws_fact.column_dimensions[col_letter].width = 16
 
+    # Registrar como Tabla Oficial de Excel (ListObject)
+    tab_fact = Table(displayName="FACT_VENTAS", ref=f"A1:I{len(fact_rows) + 1}")
+    tab_fact.tableStyleInfo = TableStyleInfo(name="TableStyleMedium9", showRowStripes=True)
+    ws_fact.add_table(tab_fact)
+
     # ==========================================================================
     # HOJA 3: DIM_PRODUCTO
     # ==========================================================================
@@ -426,6 +432,10 @@ def crear_dashboard_excel():
         ws_prod.cell(row=r_idx, column=3, value=r["categoria"])
     for c in range(1, 4):
         ws_prod.column_dimensions[get_column_letter(c)].width = 20
+
+    tab_prod = Table(displayName="DIM_PRODUCTO", ref=f"A1:C{len(prod_rows) + 1}")
+    tab_prod.tableStyleInfo = TableStyleInfo(name="TableStyleMedium2", showRowStripes=True)
+    ws_prod.add_table(tab_prod)
 
     # ==========================================================================
     # HOJA 4: DIM_CLIENTE
@@ -443,6 +453,10 @@ def crear_dashboard_excel():
     for c in range(1, 4):
         ws_cli.column_dimensions[get_column_letter(c)].width = 20
 
+    tab_cli = Table(displayName="DIM_CLIENTE", ref=f"A1:C{len(cli_rows) + 1}")
+    tab_cli.tableStyleInfo = TableStyleInfo(name="TableStyleMedium2", showRowStripes=True)
+    ws_cli.add_table(tab_cli)
+
     # ==========================================================================
     # HOJA 5: DIM_TIEMPO
     # ==========================================================================
@@ -459,6 +473,51 @@ def crear_dashboard_excel():
         ws_time.cell(row=r_idx, column=4, value=int(r["mes"]))
     for c in range(1, 5):
         ws_time.column_dimensions[get_column_letter(c)].width = 18
+
+    tab_time = Table(displayName="DIM_TIEMPO", ref=f"A1:D{len(time_rows) + 1}")
+    tab_time.tableStyleInfo = TableStyleInfo(name="TableStyleMedium2", showRowStripes=True)
+    ws_time.add_table(tab_time)
+
+    # ==========================================================================
+    # HOJA 6: GUÍA DE ACTIVACIÓN POWER PIVOT
+    # ==========================================================================
+    ws_inst = wb.create_sheet(title="Guia_PowerPivot")
+    ws_inst.views.sheetView[0].showGridLines = True
+
+    ws_inst.merge_cells("B2:K3")
+    inst_title = ws_inst["B2"]
+    inst_title.value = "📘 GUÍA MAESTRA: ACTIVACIÓN Y DEMOSTRACIÓN DE POWER PIVOT EN EXCEL 365"
+    inst_title.font = font_title
+    inst_title.fill = fill_title
+    inst_title.alignment = Alignment(horizontal="center", vertical="center")
+
+    inst_steps = [
+        ("1. ¿Por qué este paso?", "Este libro contiene los datos certificados al 100% con $0.00 de discrepancia. Para visualizar el Esquema Estrella en 'Vista de diagrama' y las medidas DAX con el icono (fx), Microsoft Excel 365 requiere compilar el modelo nativo en memoria (VertiPaq)."),
+        ("2. Opción A (1 Clic Automático)", "Usa el módulo VBA 'construir_modelo_powerpivot.bas' incluido en unidad_5/03_modelo_estrella_powerpivot/. Abre el editor con [ALT + F11], importa el módulo y presiona F5 para autogenerar todo."),
+        ("3. Opción B (Carga Rápida)", "En Excel 365, ve a cualquiera de las hojas (FACT_VENTAS, DIM_PRODUCTO, DIM_CLIENTE, DIM_TIEMPO). Selecciona una celda de la tabla -> Pestaña 'Power Pivot' -> 'Agregar a modelo de datos'. Repite para las 4 tablas estructuradas."),
+        ("4. Esquema Estrella en 15 seg", "Abre Power Pivot -> Administrar -> Vista de diagrama. Arrastra id_producto, id_cliente e id_tiempo desde las DIM hacia FACT_VENTAS. Verás el esquema estrella con cardinalidad 1 a Varios (1:N)."),
+        ("5. Medidas DAX Oficiales", "En el área de cálculo de FACT_VENTAS en Power Pivot, escribe:\n• Ventas:=SUM(FACT_VENTAS[monto])\n• Costo:=SUM(FACT_VENTAS[costo])\n• Margen Bruto:=[Ventas] - [Costo]\n• Margen %:=DIVIDE([Margen Bruto], [Ventas], 0)\n• Transacciones:=DISTINCTCOUNT(FACT_VENTAS[id_venta])\n• Ticket Promedio:=DIVIDE([Ventas], [Transacciones], 0)"),
+        ("6. Dashboard y Segmentadores", "Insertar -> Tabla dinámica -> 'Usar el modelo de datos de este libro'. Arrastra DIM_CLIENTE[region] a filas y [Ventas] a valores. Luego Insertar -> Segmentación de datos (Slicers) de Región y Categoría.")
+    ]
+
+    cur_row = 5
+    for paso, desc in inst_steps:
+        lbl_p = ws_inst.cell(row=cur_row, column=2, value=paso)
+        lbl_p.font = font_section
+        lbl_p.fill = fill_kpi
+        ws_inst.merge_cells(f"C{cur_row}:K{cur_row+1}")
+        desc_cell = ws_inst[f"C{cur_row}"]
+        desc_cell.value = desc
+        desc_cell.font = font_regular
+        desc_cell.alignment = Alignment(wrap_text=True, vertical="top")
+        for r_b in range(cur_row, cur_row + 2):
+            for c_b in range(2, 12):
+                ws_inst.cell(row=r_b, column=c_b).border = thin_border
+        cur_row += 3
+
+    ws_inst.column_dimensions["B"].width = 28
+    for col_c in ["C", "D", "E", "F", "G", "H", "I", "J", "K"]:
+        ws_inst.column_dimensions[col_c].width = 14
 
     # ==========================================================================
     # HOJA 6: VALIDACIÓN DE CONTROL Y DAX

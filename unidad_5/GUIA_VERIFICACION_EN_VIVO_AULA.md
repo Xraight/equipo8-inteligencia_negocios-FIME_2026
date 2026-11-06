@@ -13,32 +13,49 @@ Esta guía contiene el **protocolo paso a paso para la defensa y verificación e
 
 ---
 
-## 💻 Modalidad 1: Demostración en Excel 365 (Requisito Principal del Laboratorio)
+## 💻 Modalidad 1: Demostración en Excel 365 con Power Pivot Nativo
 
-### Paso 1: Abrir el archivo
-1. Abre [`U5_Dashboard_Equipo08.xlsx`](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/unidad_5/U5_Dashboard_Equipo08.xlsx).
-2. Proyecta la pestaña principal: **`Dashboard`**.
+> [!IMPORTANT]
+> **Diferencia entre Archivo CI/CD y Modelo Nativo de Power Pivot:**  
+> - El archivo `U5_Dashboard_Equipo08.xlsx` generado por el pipeline de Docker/Python contiene las hojas de cálculo, gráficos y conciliación numérica ($0.00 de diferencia) para validación en integración continua.  
+> - Para la evaluación presencial de **Power Pivot (Esquema Estrella, relaciones 1:N y medidas DAX)**, Microsoft Excel 365 requiere su motor tabular en memoria (**VertiPaq**).  
+> - El equipo cuenta con el script de automatización de 1 clic: [`construir_modelo_powerpivot.bas`](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/unidad_5/03_modelo_estrella_powerpivot/construir_modelo_powerpivot.bas) y la [`guia_paso_a_paso_powerpivot_excel365.md`](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/unidad_5/03_modelo_estrella_powerpivot/guia_paso_a_paso_powerpivot_excel365.md).
 
-### Paso 2: Mostrar el estado inicial sin filtros
-Señala al proyector las 5 tarjetas de KPI superiores:
-* **Ventas Totales:** `$2,416,376.00 MXN`
-* **Costo Total:** `$1,704,180.38 MXN`
-* **Margen Bruto:** `$712,195.62 MXN`
-* **Margen %:** `29.5%` (29.47%)
-* **Ticket Promedio:** `$2,013.65 MXN` en `1,200` transacciones.
+### Paso 1: Mostrar el Modelo Nativo de Power Pivot (Vista de Diagrama)
+1. En Excel 365, abre la pestaña **Power Pivot** → haz clic en **Administrar**.
+2. En la ventana emergente, haz clic en **Vista de diagrama** (icono superior derecho).
+3. **Muestra el Esquema Estrella en pantalla:**
+   - Señala la tabla central: `FACT_VENTAS` (1,200 transacciones).
+   - Señala las 3 dimensiones conectadas: `DIM_PRODUCTO`, `DIM_CLIENTE` y `DIM_TIEMPO`.
+   - Muestra las líneas de relación dimensional de **1 a Varios (1:N)**:
+     * `DIM_PRODUCTO[id_producto]` (1) ──── (N) `FACT_VENTAS[id_producto]`
+     * `DIM_CLIENTE[id_cliente]` (1) ──────── (N) `FACT_VENTAS[id_cliente]`
+     * `DIM_TIEMPO[id_tiempo]` (1) ────────── (N) `FACT_VENTAS[id_tiempo]`
+   - *Qué decir al maestro:* *«Profesor, aquí está el Esquema Estrella configurado en el Modelo de Datos. Las dimensiones están en el lado '1' con valores únicos y la tabla de hechos en el lado 'Muchos', permitiendo la propagación natural de filtros analíticos»*.
 
-### Paso 3: Interactuar en tiempo real frente al profesor
-Realiza los siguientes movimientos dinámicos:
+### Paso 2: Mostrar el Catálogo de Medidas DAX en el Área de Cálculo
+1. En la misma ventana de Power Pivot, haz clic en **Vista de datos** y selecciona la pestaña inferior `FACT_VENTAS`.
+2. Muestra las 6 medidas DAX calculadas en el **Área de cálculo** inferior:
+   * `Ventas:=SUM(FACT_VENTAS[monto])`
+   * `Costo:=SUM(FACT_VENTAS[costo])`
+   * `Margen Bruto:=[Ventas] - [Costo]`
+   * `Margen %:=DIVIDE([Margen Bruto], [Ventas], 0)`
+   * `Transacciones:=DISTINCTCOUNT(FACT_VENTAS[id_venta])`
+   * `Ticket Promedio:=DIVIDE([Ventas], [Transacciones], 0)`
+3. *Qué decir al maestro:* *«Las medidas están modeladas en DAX con la función `DIVIDE` para prevenir errores de división entre cero y garantizar el cálculo dinámico sobre el contexto de filtro»*.
+
+### Paso 3: Interactuar en vivo con la Tabla Dinámica y Segmentadores (Slicers)
+Regresa a la hoja de cálculo del Dashboard:
 1. **Filtrar por Región "Norte":**
-   * *Qué pasa en pantalla:* Las ventas se reducen a **$475,003.00 MXN** en 251 transacciones.
-   * *Qué decir al maestro:* *«Profesor, aquí observamos en tiempo real el rezago del Norte: representa solo el 19.66% de la venta nacional a pesar de tener 20 clientes registrados al igual que las demás regiones»*.
+   * *Qué pasa en pantalla:* La tabla dinámica y gráficos dinámicos se recalculan automáticamente: Ventas bajan a **$475,003.00 MXN** en 251 transacciones.
+   * *Qué decir al maestro:* *«Al filtrar el Norte, vemos que representa el 19.66% de la facturación nacional, evidenciando un rezago comercial respecto a Occidente y Centro»*.
 2. **Filtrar por Región "Sur":**
-   * *Qué pasa en pantalla:* Las ventas marcan **$608,288.00 MXN** y el Margen % sube a **30.39%**.
-   * *Qué decir al maestro:* *«El Sur es nuestra región más rentable porcentualmente, superando el promedio de la compañía»*.
+   * *Qué pasa en pantalla:* Ventas marcan **$608,288.00 MXN** y el Margen % sube a **30.39%**.
+   * *Qué decir al maestro:* *«El Sur es nuestra región con mayor margen porcentual, superando la media global de la compañía»*.
 3. **Filtrar por Categoría "Tecnología":**
-   * *Qué pasa en pantalla:* Se aísla el motor de facturación: **$889,916.00 MXN** (36.8%) con el **Producto 12** liderando con $346,902.00 MXN y 32.0% de margen.
-4. **Quitar filtros:**
-   * Mostrar que el total regresa de inmediato a **$2,416,376.00 MXN** (comprobando que no hay duplicados ni pérdidas).
+   * *Qué pasa en pantalla:* Facturación de **$889,916.00 MXN** (36.8%) impulsada por el Producto 12 ($346,902.00 MXN y 32.0% margen).
+4. **Quitar filtros (Borrar filtro en Slicer):**
+   * Mostrar que el total regresa de inmediato a **$2,416,376.00 MXN**, confirmando integridad referencial total.
 
 ### Paso 4: Mostrar la pestaña de control
 * Ve a la pestaña **`Cifras_Control_DAX`**:
