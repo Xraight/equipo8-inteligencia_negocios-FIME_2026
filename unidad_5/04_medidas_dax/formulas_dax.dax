@@ -1,0 +1,34 @@
+// ==============================================================================
+// MEDIDAS DAX FORMALES · LABORATORIO UNIDAD 5 (EQUIPO 8)
+// Ubicación: Área de cálculo de FACT_VENTAS (Power Pivot)
+// ==============================================================================
+
+// 1. Ventas Totales
+Ventas = SUM(FACT_VENTAS[monto])
+
+// 2. Costo Total
+Costo = SUM(FACT_VENTAS[costo])
+
+// 3. Margen Bruto Absoluto
+Margen Bruto = [Ventas] - [Costo]
+
+// 4. Margen Porcentual
+Margen % = DIVIDE([Margen Bruto], [Ventas], 0)
+
+// 5. Conteo Cardinal de Transacciones
+Transacciones = DISTINCTCOUNT(FACT_VENTAS[id_venta])
+
+// 6. Ticket Promedio
+Ticket Promedio = DIVIDE([Ventas], [Transacciones], 0)
+
+// 7. Volumen Físico (Cantidad Total)
+Unidades Vendidas = SUM(FACT_VENTAS[cantidad])
+
+// 8. Ventas 2025
+Ventas 2025 = CALCULATE([Ventas], DIM_TIEMPO[anio] = 2025)
+
+// 9. Ventas 2026
+Ventas 2026 = CALCULATE([Ventas], DIM_TIEMPO[anio] = 2026)
+
+// 10. Crecimiento Porcentual YoY Anual
+Crecimiento YoY = DIVIDE([Ventas 2026] - [Ventas 2025], [Ventas 2025], 0)

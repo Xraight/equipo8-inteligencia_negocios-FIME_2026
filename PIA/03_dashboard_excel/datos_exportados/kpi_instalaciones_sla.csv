@@ -1,0 +1,17 @@
+sucursal,total_servicios,servicios_a_tiempo,servicios_con_retraso,cumplimiento_sla_pct,dias_reales_promedio,dias_retraso_promedio,satisfaccion_promedio
+Sucursal Monterrey 11,408,121,287,29.66,11.56,4.24,3.05
+Sucursal Santa Catarina 6,392,134,258,34.18,11.24,3.64,2.94
+Sucursal Escobedo 5,408,140,268,34.31,11.46,3.79,3.04
+Sucursal Apodaca 2,432,150,282,34.72,11.11,3.73,2.86
+Sucursal Guadalupe 4,431,151,280,35.03,11.15,3.80,2.98
+Sucursal Tampico 10,420,150,270,35.71,10.90,3.55,2.97
+Sucursal San Pedro 7,376,137,239,36.44,10.84,3.37,2.95
+Sucursal Escobedo 15,418,154,264,36.84,11.01,3.32,2.97
+Sucursal Reynosa 9,359,134,225,37.33,11.44,3.94,3.03
+Sucursal Saltillo 8,439,164,275,37.36,10.85,3.18,3.20
+Sucursal San Nicolás 13,417,159,258,38.13,10.96,3.36,2.85
+Sucursal Monterrey 1,357,137,220,38.38,10.99,3.23,2.84
+Sucursal Guadalupe 14,428,167,261,39.02,10.91,3.46,2.98
+Sucursal Santa Catarina 16,392,157,235,40.05,10.39,2.92,2.97
+Sucursal San Nicolás 3,419,175,244,41.77,10.10,2.58,3.15
+Sucursal Apodaca 12,404,169,235,41.83,10.03,2.53,3.04

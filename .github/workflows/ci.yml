@@ -110,3 +110,97 @@ jobs:
           mysql -h 127.0.0.1 -P 3306 -u root -ppassword tienda_bi < "unidad_4/06_conciliacion_auditoria/05_conciliacion_auditoria.sql"
           mysql -h 127.0.0.1 -P 3306 -u root -ppassword tienda_bi < "unidad_4/07_indicadores/06_indicadores_negocio.sql"
           echo "✅ All Unidad 4 MySQL 8.0 scripts passed successfully!"
+
+  validate-unidad-5:
+    name: Validate Unidad 5 Data Mart, DAX & Deliverables (Docker)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Build Unidad 5 Generator Docker Image
+        run: |
+          docker build -t equipo8-u5-generator:latest -f unidad_5/Dockerfile .
+
+      - name: Execute Complete Unidad 5 Automated Runner
+        run: |
+          chmod +x unidad_5/ejecutar_laboratorio_docker.sh
+          ./unidad_5/ejecutar_laboratorio_docker.sh
+
+      - name: Test Unidad 5 Real-Time Terminal Verification Runner
+        run: |
+          chmod +x unidad_5/verificacion_en_vivo_terminal.sh
+          ./unidad_5/verificacion_en_vivo_terminal.sh
+
+      - name: Assert Unidad 5 Deliverables Integrity
+        run: |
+          test -s "unidad_5/U5_Dashboard_Equipo08.xlsx"
+          test -s "unidad_5/U5_Comite_Equipo08.pptx"
+          test -s "unidad_5/U5_Evidencias_Equipo08.pdf"
+          test -s "unidad_5/01_datos_crudos/FACT_VENTAS.csv"
+          test -s "unidad_5/01_datos_crudos/DIM_PRODUCTO.csv"
+          test -s "unidad_5/01_datos_crudos/DIM_CLIENTE.csv"
+          test -s "unidad_5/01_datos_crudos/DIM_TIEMPO.csv"
+          echo "✅ All Unidad 5 artifacts and control checks passed successfully!"
+
+  validate-pia:
+    name: Validate PIA Data Mart, ETL & Deliverables (Docker)
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: ce_bi
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -u root -ppassword"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Assert PIA Architecture and SQL Sources
+        run: |
+          test -s "PIA/01_arquitectura_datos/01_documento_arquitectura.md"
+          test -s "PIA/01_arquitectura_datos/02_diagrama_er_operacional.md"
+          test -s "PIA/01_arquitectura_datos/03_diagrama_esquema_estrella.md"
+          test -s "PIA/01_arquitectura_datos/04_diccionario_datos_completo.md"
+          test -s "PIA/01_arquitectura_datos/05_justificacion_decisiones_diseno.md"
+          test -s "PIA/02_datamart_mysql/00_inicializacion_bd_y_logs.sql"
+          test -s "PIA/02_datamart_mysql/01_ddl_staging.sql"
+          test -s "PIA/02_datamart_mysql/02_ddl_datamart.sql"
+          test -s "PIA/02_datamart_mysql/03_sp_limpieza_transformacion.sql"
+          test -s "PIA/02_datamart_mysql/04_sp_carga_dimensiones_hechos.sql"
+          test -s "PIA/02_datamart_mysql/05_sp_orquestador_etl.sql"
+          test -s "PIA/02_datamart_mysql/06_vistas_analiticas_kpi.sql"
+          test -s "PIA/02_datamart_mysql/07_auditoria_balance_masa.sql"
+          test -s "PIA/03_dashboard_excel/01_catalogo_medidas_dax.md"
+          test -s "PIA/04_presentacion_ejecutiva/01_guion_storytelling_15min.md"
+          test -s "PIA/04_presentacion_ejecutiva/02_contenido_10_diapositivas.md"
+          echo "✅ All PIA Architecture, DDL, SPs, DAX & Storytelling files verified!"
+
+      - name: Validate DDL, Procedures & Views Syntax in MySQL 8.0
+        run: |
+          mysql -h 127.0.0.1 -P 3306 -u root -ppassword < "PIA/02_datamart_mysql/00_inicializacion_bd_y_logs.sql"
+          mysql -h 127.0.0.1 -P 3306 -u root -ppassword < "PIA/02_datamart_mysql/01_ddl_staging.sql"
+          mysql -h 127.0.0.1 -P 3306 -u root -ppassword < "PIA/02_datamart_mysql/02_ddl_datamart.sql"
+          mysql -h 127.0.0.1 -P 3306 -u root -ppassword < "PIA/02_datamart_mysql/03_sp_limpieza_transformacion.sql"
+          mysql -h 127.0.0.1 -P 3306 -u root -ppassword < "PIA/02_datamart_mysql/04_sp_carga_dimensiones_hechos.sql"
+          mysql -h 127.0.0.1 -P 3306 -u root -ppassword < "PIA/02_datamart_mysql/05_sp_orquestador_etl.sql"
+          mysql -h 127.0.0.1 -P 3306 -u root -ppassword < "PIA/02_datamart_mysql/06_vistas_analiticas_kpi.sql"
+          echo "✅ All PIA DDL, Stored Procedures and Views executed cleanly in MySQL 8.0!"
+
+      - name: Assert PIA Final Deliverables and Package
+        run: |
+          test -s "PIA/PIA_Dashboard_CasaEstilo_Equipo08.xlsx"
+          test -s "PIA/PIA_Comite_CasaEstilo_Equipo08.pptx"
+          test -s "PIA/PIA_Evidencias_CasaEstilo_Equipo08.pdf"
+          test -s "PIA/PIA_Equipo08_CasaEstilo.zip"
+          echo "✅ All official deliverables (.xlsx, .pptx, .pdf, .zip) passed integrity check!"

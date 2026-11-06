@@ -1,0 +1,17 @@
+sucursal_id,sucursal,ciudad,estado,m2,categoria_tamano,transacciones,venta_neta,venta_por_m2,utilidad_bruta,margen_pct
+CE-S005,Sucursal Escobedo 5,Escobedo,Nuevo León,1765,Grande (>1600 m2),8935,83664951.11,47402.24,17876247.90,21.37
+CE-S008,Sucursal Saltillo 8,Saltillo,Coahuila,2180,Grande (>1600 m2),8806,83185162.55,38158.33,17829797.00,21.43
+CE-S002,Sucursal Apodaca 2,Apodaca,Nuevo León,1717,Grande (>1600 m2),8845,83001694.00,48341.11,17757095.45,21.39
+CE-S012,Sucursal Apodaca 12,Apodaca,Nuevo León,2148,Grande (>1600 m2),8832,82889529.45,38589.17,17662622.26,21.31
+CE-S011,Sucursal Monterrey 11,Monterrey,Nuevo León,1666,Grande (>1600 m2),8732,82528938.79,49537.18,17581579.72,21.30
+CE-S014,Sucursal Guadalupe 14,Guadalupe,Nuevo León,1299,Mediana (1200-1600 m2),8779,82366596.23,63407.70,17740518.13,21.54
+CE-S009,Sucursal Reynosa 9,Reynosa,Tamaulipas,2184,Grande (>1600 m2),8769,82080360.63,37582.58,17627690.40,21.48
+CE-S013,Sucursal San Nicolás 13,San Nicolás,Nuevo León,984,PequeÃ±a (<1200 m2),8775,82047630.04,83381.74,17690007.24,21.56
+CE-S015,Sucursal Escobedo 15,Escobedo,Nuevo León,823,PequeÃ±a (<1200 m2),8724,82011301.59,99649.21,17586680.74,21.44
+CE-S016,Sucursal Santa Catarina 16,Santa Catarina,Nuevo León,2106,Grande (>1600 m2),8697,81897091.63,38887.51,17526851.97,21.40
+CE-S001,Sucursal Monterrey 1,Monterrey,Nuevo León,1124,PequeÃ±a (<1200 m2),8750,81734676.60,72717.68,17660568.31,21.61
+CE-S010,Sucursal Tampico 10,Tampico,Tamaulipas,491,PequeÃ±a (<1200 m2),8696,81429365.36,165843.92,17505249.18,21.50
+CE-S007,Sucursal San Pedro 7,San Pedro,Nuevo León,866,PequeÃ±a (<1200 m2),8686,81004261.32,93538.41,17258309.34,21.31
+CE-S004,Sucursal Guadalupe 4,Guadalupe,Nuevo León,1277,Mediana (1200-1600 m2),8735,80646265.10,63152.91,17312988.34,21.47
+CE-S003,Sucursal San Nicolás 3,San Nicolás,Nuevo León,1147,PequeÃ±a (<1200 m2),8658,80327420.17,70032.62,17253594.03,21.48
+CE-S006,Sucursal Santa Catarina 6,Santa Catarina,Nuevo León,734,PequeÃ±a (<1200 m2),8581,79931247.32,108898.16,17005053.70,21.27

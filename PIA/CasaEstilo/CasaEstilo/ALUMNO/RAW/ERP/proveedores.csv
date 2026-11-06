@@ -1,0 +1,161 @@
+﻿proveedor_id,proveedor,ciudad,lead_time_dias,rating
+CE-PR0001,Proveedor CE 001,Monterrey,6,4.2
+CE-PR0002,Proveedor CE 002,San Pedro,28,4.9
+CE-PR0003,Proveedor CE 003,San Pedro,23,5.0
+CE-PR0004,Proveedor CE 004,Apodaca,12,4.2
+CE-PR0005,Proveedor CE 005,San Nicolás,22,4.1
+CE-PR0006,Proveedor CE 006,Tampico,18,4.8
+CE-PR0007,Proveedor CE 007,Escobedo,9,4.0
+CE-PR0008,Proveedor CE 008,Apodaca,9,4.3
+CE-PR0009,Proveedor CE 009,Guadalupe,6,3.0
+CE-PR0010,Proveedor CE 010,Tampico,30,3.9
+CE-PR0011,Proveedor CE 011,Tampico,24,4.1
+CE-PR0012,Proveedor CE 012,Apodaca,5,4.3
+CE-PR0013,Proveedor CE 013,Escobedo,28,4.0
+CE-PR0014,Proveedor CE 014,Reynosa,19,4.9
+CE-PR0015,Proveedor CE 015,Escobedo,26,4.6
+CE-PR0016,Proveedor CE 016,Guadalupe,24,4.8
+CE-PR0017,Proveedor CE 017,Escobedo,28,3.4
+CE-PR0018,Proveedor CE 018,Monterrey,19,4.9
+CE-PR0019,Proveedor CE 019,Guadalupe,25,3.5
+CE-PR0020,Proveedor CE 020,Apodaca,9,3.2
+CE-PR0021,Proveedor CE 021,Escobedo,6,4.6
+CE-PR0022,Proveedor CE 022,Monterrey,20,3.8
+CE-PR0023,Proveedor CE 023,Monterrey,3,4.3
+CE-PR0024,Proveedor CE 024,Escobedo,20,4.8
+CE-PR0025,Proveedor CE 025,San Pedro,22,4.3
+CE-PR0026,Proveedor CE 026,San Nicolás,26,3.3
+CE-PR0027,Proveedor CE 027,Santa Catarina,10,3.1
+CE-PR0028,Proveedor CE 028,Saltillo,16,3.5
+CE-PR0029,Proveedor CE 029,Saltillo,24,4.8
+CE-PR0030,Proveedor CE 030,Reynosa,7,3.8
+CE-PR0031,Proveedor CE 031,San Pedro,11,3.5
+CE-PR0032,Proveedor CE 032,Santa Catarina,9,4.1
+CE-PR0033,Proveedor CE 033,Guadalupe,30,3.3
+CE-PR0034,Proveedor CE 034,Guadalupe,10,3.9
+CE-PR0035,Proveedor CE 035,Monterrey,3,3.8
+CE-PR0036,Proveedor CE 036,Escobedo,22,4.9
+CE-PR0037,Proveedor CE 037,San Nicolás,15,4.4
+CE-PR0038,Proveedor CE 038,Guadalupe,30,3.6
+CE-PR0039,Proveedor CE 039,Santa Catarina,7,3.6
+CE-PR0040,Proveedor CE 040,Monterrey,29,3.5
+CE-PR0041,Proveedor CE 041,Guadalupe,6,3.4
+CE-PR0042,Proveedor CE 042,Escobedo,17,4.9
+CE-PR0043,Proveedor CE 043,Tampico,22,3.9
+CE-PR0044,Proveedor CE 044,Santa Catarina,2,4.7
+CE-PR0045,Proveedor CE 045,Monterrey,30,4.4
+CE-PR0046,Proveedor CE 046,Saltillo,24,4.6
+CE-PR0047,Proveedor CE 047,Guadalupe,17,4.6
+CE-PR0048,Proveedor CE 048,Monterrey,16,4.9
+CE-PR0049,Proveedor CE 049,Monterrey,17,4.1
+CE-PR0050,Proveedor CE 050,Tampico,22,4.6
+CE-PR0051,Proveedor CE 051,Monterrey,3,4.4
+CE-PR0052,Proveedor CE 052,San Pedro,11,4.7
+CE-PR0053,Proveedor CE 053,Santa Catarina,13,2.9
+CE-PR0054,Proveedor CE 054,Escobedo,5,3.9
+CE-PR0055,Proveedor CE 055,San Nicolás,2,3.7
+CE-PR0056,Proveedor CE 056,Monterrey,25,4.4
+CE-PR0057,Proveedor CE 057,Escobedo,24,4.3
+CE-PR0058,Proveedor CE 058,Tampico,6,4.4
+CE-PR0059,Proveedor CE 059,Apodaca,22,2.9
+CE-PR0060,Proveedor CE 060,Apodaca,9,3.5
+CE-PR0061,Proveedor CE 061,Guadalupe,29,3.7
+CE-PR0062,Proveedor CE 062,Escobedo,13,5.0
+CE-PR0063,Proveedor CE 063,Guadalupe,4,4.5
+CE-PR0064,Proveedor CE 064,Saltillo,9,3.6
+CE-PR0065,Proveedor CE 065,Monterrey,26,3.5
+CE-PR0066,Proveedor CE 066,San Nicolás,17,2.8
+CE-PR0067,Proveedor CE 067,Guadalupe,24,3.9
+CE-PR0068,Proveedor CE 068,Apodaca,11,4.3
+CE-PR0069,Proveedor CE 069,Monterrey,9,3.9
+CE-PR0070,Proveedor CE 070,San Nicolás,2,4.8
+CE-PR0071,Proveedor CE 071,Guadalupe,3,4.4
+CE-PR0072,Proveedor CE 072,Tampico,5,4.7
+CE-PR0073,Proveedor CE 073,Monterrey,4,3.0
+CE-PR0074,Proveedor CE 074,Monterrey,2,3.7
+CE-PR0075,Proveedor CE 075,Saltillo,20,4.7
+CE-PR0076,Proveedor CE 076,San Pedro,18,3.8
+CE-PR0077,Proveedor CE 077,Reynosa,2,4.1
+CE-PR0078,Proveedor CE 078,Reynosa,10,4.9
+CE-PR0079,Proveedor CE 079,Tampico,5,4.4
+CE-PR0080,Proveedor CE 080,Saltillo,9,3.0
+CE-PR0081,Proveedor CE 081,Tampico,19,3.9
+CE-PR0082,Proveedor CE 082,San Nicolás,19,3.8
+CE-PR0083,Proveedor CE 083,Tampico,15,3.4
+CE-PR0084,Proveedor CE 084,Santa Catarina,27,4.1
+CE-PR0085,Proveedor CE 085,Tampico,7,4.2
+CE-PR0086,Proveedor CE 086,Escobedo,7,4.2
+CE-PR0087,Proveedor CE 087,San Nicolás,9,4.4
+CE-PR0088,Proveedor CE 088,San Pedro,15,4.1
+CE-PR0089,Proveedor CE 089,Tampico,14,3.5
+CE-PR0090,Proveedor CE 090,San Nicolás,25,3.7
+CE-PR0091,Proveedor CE 091,Escobedo,13,3.2
+CE-PR0092,Proveedor CE 092,Escobedo,19,4.8
+CE-PR0093,Proveedor CE 093,San Pedro,15,3.7
+CE-PR0094,Proveedor CE 094,Escobedo,12,3.0
+CE-PR0095,Proveedor CE 095,Monterrey,28,3.4
+CE-PR0096,Proveedor CE 096,Reynosa,15,4.3
+CE-PR0097,Proveedor CE 097,Tampico,17,3.7
+CE-PR0098,Proveedor CE 098,Escobedo,28,3.2
+CE-PR0099,Proveedor CE 099,Santa Catarina,8,4.1
+CE-PR0100,Proveedor CE 100,Santa Catarina,21,4.7
+CE-PR0101,Proveedor CE 101,Escobedo,14,3.6
+CE-PR0102,Proveedor CE 102,Saltillo,5,4.2
+CE-PR0103,Proveedor CE 103,Reynosa,4,3.6
+CE-PR0104,Proveedor CE 104,Escobedo,17,2.8
+CE-PR0105,Proveedor CE 105,Santa Catarina,2,4.9
+CE-PR0106,Proveedor CE 106,Apodaca,28,3.5
+CE-PR0107,Proveedor CE 107,Saltillo,10,4.7
+CE-PR0108,Proveedor CE 108,Apodaca,29,3.1
+CE-PR0109,Proveedor CE 109,Santa Catarina,17,3.8
+CE-PR0110,Proveedor CE 110,Apodaca,2,2.8
+CE-PR0111,Proveedor CE 111,Apodaca,25,2.8
+CE-PR0112,Proveedor CE 112,San Pedro,2,3.5
+CE-PR0113,Proveedor CE 113,Apodaca,4,4.1
+CE-PR0114,Proveedor CE 114,San Nicolás,29,3.9
+CE-PR0115,Proveedor CE 115,Guadalupe,25,3.8
+CE-PR0116,Proveedor CE 116,Guadalupe,28,4.0
+CE-PR0117,Proveedor CE 117,Reynosa,14,3.8
+CE-PR0118,Proveedor CE 118,Monterrey,11,3.3
+CE-PR0119,Proveedor CE 119,Santa Catarina,5,4.4
+CE-PR0120,Proveedor CE 120,San Nicolás,30,3.6
+CE-PR0121,Proveedor CE 121,Santa Catarina,16,4.2
+CE-PR0122,Proveedor CE 122,Santa Catarina,3,3.7
+CE-PR0123,Proveedor CE 123,Tampico,28,3.7
+CE-PR0124,Proveedor CE 124,Monterrey,8,4.2
+CE-PR0125,Proveedor CE 125,Monterrey,4,3.0
+CE-PR0126,Proveedor CE 126,Saltillo,20,4.6
+CE-PR0127,Proveedor CE 127,Reynosa,5,3.3
+CE-PR0128,Proveedor CE 128,Reynosa,10,4.6
+CE-PR0129,Proveedor CE 129,Escobedo,18,3.4
+CE-PR0130,Proveedor CE 130,Reynosa,20,3.9
+CE-PR0131,Proveedor CE 131,Monterrey,15,4.8
+CE-PR0132,Proveedor CE 132,San Pedro,13,4.0
+CE-PR0133,Proveedor CE 133,Santa Catarina,11,4.1
+CE-PR0134,Proveedor CE 134,Apodaca,18,3.3
+CE-PR0135,Proveedor CE 135,Tampico,19,3.5
+CE-PR0136,Proveedor CE 136,Reynosa,8,4.6
+CE-PR0137,Proveedor CE 137,Apodaca,19,3.8
+CE-PR0138,Proveedor CE 138,Escobedo,8,3.5
+CE-PR0139,Proveedor CE 139,Apodaca,16,4.7
+CE-PR0140,Proveedor CE 140,Tampico,22,4.6
+CE-PR0141,Proveedor CE 141,Guadalupe,19,4.6
+CE-PR0142,Proveedor CE 142,Escobedo,9,4.0
+CE-PR0143,Proveedor CE 143,Apodaca,13,4.3
+CE-PR0144,Proveedor CE 144,Reynosa,28,2.9
+CE-PR0145,Proveedor CE 145,Saltillo,26,3.8
+CE-PR0146,Proveedor CE 146,Tampico,16,4.7
+CE-PR0147,Proveedor CE 147,Guadalupe,14,3.7
+CE-PR0148,Proveedor CE 148,San Pedro,18,3.7
+CE-PR0149,Proveedor CE 149,Reynosa,22,4.2
+CE-PR0150,Proveedor CE 150,Apodaca,22,4.7
+CE-PR0151,Proveedor CE 151,San Nicolás,28,4.5
+CE-PR0152,Proveedor CE 152,Santa Catarina,22,3.2
+CE-PR0153,Proveedor CE 153,Guadalupe,5,3.3
+CE-PR0154,Proveedor CE 154,Apodaca,12,3.4
+CE-PR0155,Proveedor CE 155,Santa Catarina,6,3.8
+CE-PR0156,Proveedor CE 156,San Pedro,21,3.0
+CE-PR0157,Proveedor CE 157,Saltillo,4,3.9
+CE-PR0158,Proveedor CE 158,San Pedro,27,3.8
+CE-PR0159,Proveedor CE 159,Tampico,2,3.4
+CE-PR0160,Proveedor CE 160,Saltillo,12,3.1

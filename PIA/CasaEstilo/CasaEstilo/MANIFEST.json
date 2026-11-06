@@ -1,0 +1,16 @@
+{
+  "empresa": "Casa&Estilo",
+  "sector": "Muebles y decoración",
+  "codigo": "CE",
+  "registros": {
+    "ventas": 140000,
+    "detalle_ventas": 331758,
+    "clientes": 10800,
+    "productos": 1340,
+    "sucursales": 16,
+    "proveedores": 160,
+    "inventario": 21440,
+    "compras": 13000,
+    "devoluciones": 9952
+  }
+}

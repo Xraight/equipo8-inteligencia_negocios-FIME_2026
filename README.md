@@ -83,6 +83,34 @@ El repositorio se encuentra organizado por unidades temáticas para facilitar la
     ├── script_maestro_etl.sql          # Pipeline unificado reproducible de inicio a fin
     ├── ejecutar_laboratorio_docker.sh  # Script de ejecución automatizada en Docker
     └── README.md                       # Índice maestro de Unidad 4
+└── unidad_5/                           # Del Data Mart al Dashboard Ejecutivo y al Comité Directivo
+    ├── 01_datos_crudos/                # 4 CSVs originales e inmutables (1,200 transacciones)
+    ├── 02_calidad_y_powerquery/        # Ingesta, tipado estricto, perfilado y código M
+    ├── 03_modelo_estrella_powerpivot/  # Esquema estrella, cardinalidades 1:N y Time Intelligence
+    ├── 04_medidas_dax/                 # 6 medidas fundamentales + comparativas YoY
+    ├── 05_validacion_numerica/         # Conciliación cuantitativa (discrepancia $0.00)
+    ├── 06_dashboard_ejecutivo/         # Maquetación, tarjetas KPI, gráficos y segmentadores
+    ├── 07_analisis_cuatro_niveles/     # Descriptivo, diagnóstico, predictivo y prescriptivo
+    ├── 08_comite_directivo/            # Deck de 7 slides, guion oral 15 min y bitácora IA
+    ├── scripts_generacion/             # Automatización en Python (OpenPyXL, python-pptx, ReportLab)
+    ├── Dockerfile                      # Entorno contenedorizado (Python 3.12-slim)
+    ├── ejecutar_laboratorio_docker.sh  # Runner automatizado maestro 100% reproducible
+    ├── U5_Dashboard_Equipo08.xlsx      # Entregable: Libro Excel con Modelo, DAX y Tablero
+    ├── U5_Comite_Equipo08.pptx         # Entregable: Presentación ejecutiva (7 diapositivas 16:9)
+    ├── U5_Evidencias_Equipo08.pdf      # Entregable: Reporte formal de evidencias académicas
+    └── README.md                       # Índice maestro de Unidad 5
+└── PIA/                                # Producto Integrador de Aprendizaje: Solución BI Casa&Estilo (30%)
+    ├── 01_arquitectura_datos/          # Diagrama ER, Esquema Estrella, Diccionario y Justificación
+    ├── 02_datamart_mysql/              # DDL Staging, DDL Data Mart, SPs ETL, Vistas y Balance de Masa
+    ├── 03_dashboard_excel/             # Catálogo de 10 medidas DAX y especificación del tablero
+    ├── 04_presentacion_ejecutiva/      # Guion de storytelling de 15 min y contenido de 10 diapositivas
+    ├── scripts_docker/                 # Automatización en Python para generación de artefactos
+    ├── ejecutar_pia_docker.sh          # Runner maestro 100% reproducible en Docker
+    ├── PIA_Dashboard_CasaEstilo_Equipo08.xlsx # Entregable: Tablero Ejecutivo interactivo
+    ├── PIA_Comite_CasaEstilo_Equipo08.pptx    # Entregable: Deck de 10 diapositivas para Comité Directivo
+    ├── PIA_Evidencias_CasaEstilo_Equipo08.pdf # Entregable: Reporte formal de evidencias académicas
+    ├── PIA_Equipo08_CasaEstilo.zip     # Entregable Oficial: Empaque unificado con todos los archivos
+    └── README.md                       # Índice maestro del PIA
 ```
 
 ---
@@ -113,6 +141,31 @@ Estructurada en 7 fases especializadas:
   - Bitácora de balance de masa y conciliación financiera (`etl_auditoria`).
   - Reportes de indicadores comerciales (Ventas netas y pedidos entregados).
   - Análisis crítico fundamentado sobre decisiones de limpieza y reglas de negocio.
+
+### 🔹 [Unidad 5: Del Data Mart al Dashboard Ejecutivo y al Comité Directivo](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/unidad_5/README.md)
+- **Función General:** Construcción y validación de un modelo analítico dimensional en esquema estrella a partir de 4 archivos CSV, desarrollo de medidas DAX en Power Pivot, maquetación de un dashboard gerencial interactivo en Excel 365 y análisis sustentado para la toma de decisiones del Comité Directivo.
+- **Entregables:**
+  - Ingesta y perfilado de calidad en Power Query (`02_calidad_y_powerquery/scripts_m_powerquery.m`).
+  - Modelo de datos en esquema estrella y diagnóstico de relaciones (`03_modelo_estrella_powerpivot/`).
+  - Catálogo formal de medidas DAX (`04_medidas_dax/catalogo_medidas_dax.md`).
+  - Conciliación cuantitativa contra cifras de control con 100.00% de coincidencia y discrepancia $0.00 (`05_validacion_numerica/`).
+  - Tablero de control ejecutivo interactivo (`U5_Dashboard_Equipo08.xlsx`).
+  - Presentación ejecutiva para el Comité Directivo de 7 diapositivas panorámicas (`U5_Comite_Equipo08.pptx`).
+  - Reporte integral de evidencias académicas en PDF (`U5_Evidencias_Equipo08.pdf`).
+  - Runner automatizado en Docker (`unidad_5/ejecutar_laboratorio_docker.sh`).
+  - **Verificación en Tiempo Real para el Aula:** Tablero web reactivo interactivo en Docker ([`unidad_5/iniciar_dashboard_en_vivo.sh`](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/unidad_5/iniciar_dashboard_en_vivo.sh) en `http://localhost:8085`), runner proyectable en terminal ([`unidad_5/verificacion_en_vivo_terminal.sh`](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/unidad_5/verificacion_en_vivo_terminal.sh)) y [Guía de Verificación en Vivo para el Aula](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/unidad_5/GUIA_VERIFICACION_EN_VIVO_AULA.md).
+
+### 🏆 [Producto Integrador de Aprendizaje (PIA): Solución BI Empresarial Completa (30%)](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/PIA/README.md)
+- **Función General:** Solución de Business Intelligence de principio a fin para la empresa asignada **Casa&Estilo** (Muebles y Decoración). Abarca desde la ingesta y perfilado de 11 fuentes RAW (+530,000 registros), diseño de arquitectura y Data Mart en MySQL 8.0 en esquema estrella (331,758 líneas de detalle con 100% de conciliación contable y discrepancia $0.00), hasta el desarrollo de 10 métricas DAX en Power Pivot, maquetación de un Dashboard Ejecutivo interactivo y un Deck de 10 diapositivas con guion de defensa de 15 minutos ante el Comité Directivo.
+- **Entregables Oficiales:**
+  - **1. Arquitectura de Datos (25%):** Diagrama ER operacional, esquema estrella, diccionario de datos y justificación técnica de modelado ([`PIA/01_arquitectura_datos/`](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/PIA/01_arquitectura_datos/)).
+  - **2. Data Mart en MySQL / SQL (25%):** DDL completo de Staging y Data Mart, Stored Procedures modulares, orquestador ETL con bitácora `etl_log`, índices de optimización, vistas analíticas y balance de masa oficial ([`PIA/02_datamart_mysql/`](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/PIA/02_datamart_mysql/)).
+  - **3. Dashboard en Excel (25%):** Libro corporativo con modelo de datos, 10 métricas DAX, scorecard de KPIs, tendencias y segmentadores ([`PIA/PIA_Dashboard_CasaEstilo_Equipo08.xlsx`](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/PIA/PIA_Dashboard_CasaEstilo_Equipo08.xlsx)).
+  - **4. Presentación Ejecutiva (25%):** Deck formal de 10 diapositivas panorámicas (16:9) ([`PIA/PIA_Comite_CasaEstilo_Equipo08.pptx`](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/PIA/PIA_Comite_CasaEstilo_Equipo08.pptx)) y guion de storytelling de 15 minutos ([`PIA/04_presentacion_ejecutiva/01_guion_storytelling_15min.md`](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/PIA/04_presentacion_ejecutiva/01_guion_storytelling_15min.md)).
+  - **Reporte Formal de Evidencias:** Documento PDF académico de certificación ([`PIA/PIA_Evidencias_CasaEstilo_Equipo08.pdf`](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/PIA/PIA_Evidencias_CasaEstilo_Equipo08.pdf)).
+  - **Empaque Oficial Unificado:** Archivo ZIP que contiene el 100% de los componentes ([`PIA/PIA_Equipo08_CasaEstilo.zip`](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/PIA/PIA_Equipo08_CasaEstilo.zip)).
+  - **Runner Maestro Automatizado en Docker:** Script ejecutable de inicio a fin ([`PIA/ejecutar_pia_docker.sh`](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/PIA/ejecutar_pia_docker.sh)).
+
 
 ---
 
@@ -153,3 +206,5 @@ Se integró un flujo de integración continua en [`.github/workflows/ci.yml`](fi
 1. **Trigger:** Eventos `push` y `pull_request` sobre la rama `main`.
 2. **Validación de DDL:** Compilación y ejecución automática del esquema relacional en una base de datos limpia para detectar errores de sintaxis o claves foráneas huérfanas.
 3. **Validación de Consultas y Procedimientos:** Ejecución secuencial de scripts en `unidad_3/` (`02_ddl_y_datos`, `06_stored_procedure`, `04_consultas_sql`) para garantizar que cualquier cambio mantenga la integridad y ejecute con éxito.
+4. **Validación de Pipeline ETL (Unidad 4):** Ejecución automatizada en MySQL 8.0 del pipeline ETL completo (`script_maestro_etl.sql` y scripts modulares) con balance de masa.
+5. **Validación de Data Mart, DAX y Entregables (Unidad 5):** Ejecución automatizada en contenedor Docker de la suite de validación numérica de cifras de control y regeneración de artefactos (`.xlsx`, `.pptx`, `.pdf`).
