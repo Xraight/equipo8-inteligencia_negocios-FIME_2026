@@ -20,35 +20,63 @@ Cuando abres el archivo generado automáticamente por Python (`U5_Dashboard_Equi
 
 ---
 
-## ⚡ 2. Las Dos Vías de Solución
+## ⚡ 2. Las Tres Vías de Solución
 
-Tienes **dos opciones inmediatas** para tener tu Modelo de Datos al 100%:
-* **Opción A (Ultra-rápida · 1 Clic con Macro VBA):** Si quieres que Excel haga todo solo en 5 segundos.
-* **Opción B (Manual Nativa · 2 Minutos):** Si el profesor te pide hacerlo paso a paso en el pizarrón o proyector.
-
----
-
-## 🚀 Opción A: Automatización de 1 Clic mediante Macro VBA
-
-Hemos preparado el archivo [`construir_modelo_powerpivot.bas`](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/unidad_5/03_modelo_estrella_powerpivot/construir_modelo_powerpivot.bas) que invoca las APIs nativas de Excel en Windows:
-
-1. Abre un libro nuevo en blanco en **Excel 365 (Windows)**.
-2. Guárdalo como libro habilitado para macros: `U5_Dashboard_Equipo08.xlsm` dentro de la carpeta `unidad_5` (donde está la subcarpeta `01_datos_crudos`).
-3. Presiona la combinación de teclas: `ALT + F11` para abrir el editor de Visual Basic.
-4. En el menú superior: haz clic en **Archivo** → **Importar archivo...** y selecciona:  
-   `unidad_5/03_modelo_estrella_powerpivot/construir_modelo_powerpivot.bas`.  
-   *(O bien: haz clic en Insertar → Módulo y pega todo el contenido del archivo .bas).*
-5. Pon el cursor dentro del código de la macro `ConstruirModeloPowerPivotCompleto` y presiona `F5` (o botón Ejecutar ▶️).
-6. **¡Listo!** En 5 segundos, la macro:
-   - Importará los 4 CSVs mediante Power Query.
-   - Creará las conexiones al Modelo de Datos.
-   - Establecerá las 3 relaciones 1:N en el Esquema Estrella.
-   - Registrará las 6 medidas DAX oficiales formateadas.
-   - Insertará una hoja `Dashboard_PowerPivot` con una Tabla Dinámica conectada a `ThisWorkbookDataModel`.
+Tienes **tres opciones inmediatas** para tener tu Modelo de Datos al 100%:
+* **Opción A (La Más Recomendada y Rápida · 30 Segundos):** Usar las tablas ya existentes en `U5_Dashboard_Equipo08.xlsx` con el botón *"Agregar a modelo de datos"* (0 macros, 0 errores, 100% nativo).
+* **Opción B (Automatizada con Macro VBA):** Con el módulo corregido [`construir_modelo_powerpivot.bas`](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/unidad_5/03_modelo_estrella_powerpivot/construir_modelo_powerpivot.bas) (protegido contra el Error 9 multilingüe).
+* **Opción C (Demostración Manual Completa Desde CSVs · 2 Minutos):** Importando desde Power Query si el profesor te pide ver todo el flujo ETL desde cero.
 
 ---
 
-## 🛠️ Opción B: Construcción Manual en Vivo (Paso a Paso en 2 Minutos)
+## 🌟 Opción A (Recomendada): El Método de los 30 Segundos ("Agregar a modelo de datos")
+
+Tu archivo [`U5_Dashboard_Equipo08.xlsx`](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/unidad_5/U5_Dashboard_Equipo08.xlsx) **ya contiene los 4 datasets estructurados como Tablas Oficiales de Excel** (`FACT_VENTAS`, `DIM_PRODUCTO`, `DIM_CLIENTE`, `DIM_TIEMPO`).
+
+Por lo tanto, no necesitas programar ni lidiar con macros:
+1. Abre [`U5_Dashboard_Equipo08.xlsx`](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/unidad_5/U5_Dashboard_Equipo08.xlsx) en Excel 365 (Windows).
+2. Haz clic en la pestaña de la hoja **`FACT_VENTAS`** y selecciona cualquier celda dentro de la tabla.
+3. En la cinta de opciones superior, ve a la pestaña **Power Pivot** y haz clic en el botón:  
+   👉 **"Agregar a modelo de datos"** (Add to Data Model).
+   *(Se abrirá instantáneamente la ventana de Power Pivot con FACT_VENTAS cargada en el motor VertiPaq).*
+4. Regresa a la ventana principal de Excel y repite ese mismo clic para las otras 3 hojas:
+   - En `DIM_PRODUCTO` ➔ clic en cualquier celda ➔ **Power Pivot** ➔ **Agregar a modelo de datos**.
+   - En `DIM_CLIENTE` ➔ clic en cualquier celda ➔ **Power Pivot** ➔ **Agregar a modelo de datos**.
+   - En `DIM_TIEMPO` ➔ clic en cualquier celda ➔ **Power Pivot** ➔ **Agregar a modelo de datos**.
+5. En la ventana de Power Pivot:
+   - Haz clic en **Vista de diagrama** (esquina superior derecha).
+   - Arrastra con el ratón las 3 claves hacia `FACT_VENTAS`:
+     * `DIM_PRODUCTO[id_producto]` ➔ `FACT_VENTAS[id_producto]`
+     * `DIM_CLIENTE[id_cliente]` ➔ `FACT_VENTAS[id_cliente]`
+     * `DIM_TIEMPO[id_tiempo]` ➔ `FACT_VENTAS[id_tiempo]`
+6. En la pestaña *Vista de datos* de `FACT_VENTAS`, pega en el área de cálculo inferior las 6 medidas DAX (ver Paso 4).
+
+> **Ventaja indiscutible:** Toma 30 segundos, funciona en cualquier versión de Excel (Español o Inglés), y nunca arroja errores de VBA o permisos.
+
+---
+
+## 🚀 Opción B: Automatización mediante Macro VBA (Sin Error 9)
+
+Si deseas utilizar la macro automatizada, hemos actualizado [`construir_modelo_powerpivot.bas`](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/unidad_5/03_modelo_estrella_powerpivot/construir_modelo_powerpivot.bas) para solucionar de raíz el `subscript out of range (code 9)`:
+
+### ¿Por qué ocurrió el Error 9?
+El error 9 en VBA significa *"Subíndice fuera del intervalo"*. Ocurría porque la versión anterior intentaba llamar por nombre en inglés a `wb.Connections("ModelConnection_ThisWorkbookDataModel")`. En Excel en Español o antes de que el motor VertiPaq esté poblado, esa clave de texto no existe en la colección, detonando el error 9.
+
+### Solución aplicada en el nuevo código:
+1. Reemplazamos la clave de texto por la propiedad nativa de Excel: `wb.Model.WorkbookConnection`.
+2. Se agregó un escaneo inteligente de conexiones que detecta automáticamente cualquier conexión de tipo Modelo en español o inglés (`Type = xlConnectionTypeModel`).
+3. Se añadió detección automática: si el libro ya tiene las hojas de datos (`FACT_VENTAS`, etc.), las aprovecha directamente.
+
+### Pasos para ejecutar la macro actualizada:
+1. Abre tu libro en Excel 365.
+2. Presiona `ALT + F11`.
+3. Si tenías el módulo anterior, haz clic derecho sobre él en el árbol de la izquierda y selecciona *Quitar Módulo...* (No guardar).
+4. Menú **Archivo** → **Importar archivo...** y selecciona el nuevo [`construir_modelo_powerpivot.bas`](file:///home/butzmann/.gemini/antigravity-ide/scratch/equipo8-inteligencia_negocios-FIME_2026/unidad_5/03_modelo_estrella_powerpivot/construir_modelo_powerpivot.bas).
+5. Presiona `F5` para ejecutar.
+
+---
+
+## 🛠️ Opción C: Construcción Manual en Vivo Desde Cero (Paso a Paso en 2 Minutos)
 
 Esta es la forma estándar que el profesor evaluará si te pide realizarlo frente al salón de clases:
 
