@@ -57,16 +57,24 @@ Si el profesor prefiere ver cómo lo construyes tú mismo en vivo frente al sín
 El libro ya tiene las tablas configuradas como Tablas Oficiales (`ListObjects`):
 1. Ve a la pestaña **`FACT_VENTAS_MODELO`**, haz clic dentro de la tabla y en la pestaña **Power Pivot**, haz clic en **Agregar a modelo de datos**.
 2. Ve a la pestaña **`DIM_PRODUCTO`**, haz clic dentro de la tabla y pulsa **Agregar a modelo de datos**.
-3. Repite para **`DIM_SUCURSAL`**, **`DIM_CANAL`** y **`DIM_TIEMPO`**.
+3. Repite para **`DIM_SUCURSAL`**, **`DIM_CANAL`**, **`DIM_TIEMPO`**, **`FACT_DEVOLUCIONES`** y **`FACT_INSTALACIONES`**.
 
-### Paso 3: Crear las Relaciones en la Vista de Diagrama (Esquema Estrella)
+### Paso 3: Crear las Relaciones en la Vista de Diagrama (Constelación de Hechos)
 1. En la pestaña **Power Pivot**, haz clic en **Administrar**.
 2. En la ventana de Power Pivot, en el grupo *Ver*, haz clic en **Vista de diagrama**.
-3. Arrastra las columnas para conectar el Esquema Estrella:
+3. Conectar la estrella principal de **VENTAS**:
+   - Arrastra `producto_key` de `TablaDimProducto` hacia `producto_key` de `TablaFactVentas`.
    - Arrastra `sucursal_key` de `TablaDimSucursal` hacia `sucursal_key` de `TablaFactVentas`.
    - Arrastra `canal_id` de `TablaDimCanal` hacia `canal_id` de `TablaFactVentas`.
    - Arrastra `tiempo_id` de `TablaDimTiempo` hacia `tiempo_id` de `TablaFactVentas`.
-4. Observa cómo Excel dibuja automáticamente las líneas de relación con cardinalidad **1 a Varios ($1:\infty$)**.
+4. Conectar la estrella de **DEVOLUCIONES** e **INSTALACIONES** (Dimensiones Conformes):
+   - Arrastra `producto_key` de `TablaDimProducto` hacia `producto_key` de `TablaFactDevoluciones`.
+   - Arrastra `sucursal_key` de `TablaDimSucursal` hacia `sucursal_key` de `TablaFactDevoluciones`.
+   - Arrastra `tiempo_id` de `TablaDimTiempo` hacia `tiempo_id` de `TablaFactDevoluciones`.
+   - Arrastra `sucursal_key` de `TablaDimSucursal` hacia `sucursal_key` de `TablaFactInstalaciones`.
+5. Observa cómo Excel dibuja automáticamente las líneas de relación con cardinalidad **1 a Varios ($1:\infty$)**.
+
+> 💡 **Nota de Arquitectura Kimball:** Las tablas de hechos (`TablaFactVentas` y `TablaFactDevoluciones`) **NUNCA se conectan directamente entre sí**. Se comunican compartiendo las **Dimensiones Conformes** (`DimProducto`, `DimSucursal`, `DimTiempo`). Esto previene duplicidad de conteos ('chasm traps') y permite que las medidas DAX crucen ventas y devoluciones limpiamente.
 
 ### Paso 4: Crear las Medidas DAX
 En la ventana de Power Pivot (en la Vista de Datos, en la cuadrícula inferior de cálculo) o desde Excel en **Power Pivot** $\to$ **Medidas** $\to$ **Nueva medida**:

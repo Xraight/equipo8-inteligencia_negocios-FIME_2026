@@ -146,19 +146,26 @@ def create_workbook():
     instrucciones = [
         ("1. ¿QUÉ CONTIENE ESTE LIBRO DE TRABAJO?",
          "Este archivo incluye un Tablero de Control Ejecutivo 100% interactivo con 7 gráficos nativos en las pestañas 'DASHBOARD_EJECUTIVO', 'ANALISIS_COMERCIAL' y 'OPERACIONES_Y_CALIDAD'. Además, todas las hojas de datos están estructuradas como Tablas Oficiales de Excel (ListObjects) listas para integrarse en el Modelo de Datos de Power Pivot."),
-        ("2. CÓMO MOSTRAR EL ESQUEMA ESTRELLA EN VIVO (2 MINUTOS)",
-         "Paso 1: Ve a la pestaña 'FACT_VENTAS_MODELO', haz clic dentro de la tabla y en la pestaña superior 'Power Pivot', pulsa 'Agregar a modelo de datos'.\n"
-         "Paso 2: Repite el mismo paso para 'DIM_PRODUCTO', 'DIM_SUCURSAL', 'DIM_CANAL' y 'DIM_TIEMPO'.\n"
-         "Paso 3: En la ventana de Power Pivot, haz clic en 'Vista de diagrama' (Diagram View).\n"
-         "Paso 4: Arrastra las llaves con el cursor para unir las tablas:\n"
+        ("2. CÓMO CONECTAR EL ESQUEMA EN LA VISTA DE DIAGRAMA (PASO A PASO)",
+         "Paso 1: Agrega las tablas a Power Pivot: en cada hoja ('FACT_VENTAS_MODELO', 'DIM_PRODUCTO', 'DIM_SUCURSAL', 'DIM_CANAL', 'DIM_TIEMPO', 'FACT_DEVOLUCIONES', 'FACT_INSTALACIONES'), haz clic en la tabla y en la pestaña 'Power Pivot' pulsa 'Agregar a modelo de datos'.\n"
+         "Paso 2: En la ventana de Power Pivot, haz clic en 'Vista de diagrama' (Diagram View).\n"
+         "Paso 3: Arrastra las llaves para conectar la estrella de VENTAS:\n"
+         "  • producto_key de TablaDimProducto -> producto_key de TablaFactVentas\n"
          "  • sucursal_key de TablaDimSucursal -> sucursal_key de TablaFactVentas\n"
          "  • canal_id de TablaDimCanal -> canal_id de TablaFactVentas\n"
          "  • tiempo_id de TablaDimTiempo -> tiempo_id de TablaFactVentas\n"
-         "✔ ¡Excel dibujará de inmediato las líneas de relación 1 a Varios (1:*) del Esquema Estrella!"),
-        ("3. CÓMO CREAR UN GRÁFICO DINÁMICO EN 10 SEGUNDOS",
-         "En la misma ventana de Power Pivot, en la pestaña Inicio, haz clic en 'Tabla dinámica' -> 'Gráfico dinámico' -> 'Nueva hoja'. Arrastra 'categoria' a Eje y 'monto_neto' a Valores. ¡Listo! Habrás demostrado la conexión directa con el cubo tabular VertiPaq frente al sínodo."),
-        ("4. ARGUMENTACIÓN TÉCNICA ANTE EL SÍNODO (RÚBRICA 25%)",
-         "'Profesor, nuestro modelo dimensional en estrella conecta la tabla de hechos FactVentas con 4 dimensiones conformes. El cálculo de margen se realiza mediante la medida DAX [Margen Bruto %] = DIVIDE([Utilidad Bruta], [Ventas Netas], 0), evitando promedios simples y garantizando rigor financiero en las 16 sucursales y 3 canales.'")
+         "Paso 4: Conectar la estrella de DEVOLUCIONES e INSTALACIONES (Constelación):\n"
+         "  • producto_key de TablaDimProducto -> producto_key de TablaFactDevoluciones\n"
+         "  • sucursal_key de TablaDimSucursal -> sucursal_key de TablaFactDevoluciones\n"
+         "  • tiempo_id de TablaDimTiempo -> tiempo_id de TablaFactDevoluciones\n"
+         "  • sucursal_key de TablaDimSucursal -> sucursal_key de TablaFactInstalaciones\n"
+         "✔ ¡Excel dibujará las relaciones 1 a Varios (1:*) de la Constelación de Hechos!"),
+        ("3. ¿POR QUÉ FACT_DEVOLUCIONES NO SE CONECTA DIRECTO A FACT_VENTAS?",
+         "Regla de Oro de Kimball: Dos tablas de hechos NUNCA se relacionan directamente entre sí (generaría relaciones muchos a muchos ambiguas o 'chasm traps'). En su lugar, se comunican a través de DIMENSIONES CONFORMES compartidas (Producto, Sucursal y Tiempo). Al filtrar por Sucursal o Año, ambas tablas responden al unísono."),
+        ("4. CÓMO CREAR UN GRÁFICO DINÁMICO EN 10 SEGUNDOS",
+         "En la ventana de Power Pivot, en la pestaña Inicio, haz clic en 'Tabla dinámica' -> 'Gráfico dinámico' -> 'Nueva hoja'. Arrastra 'categoria' a Eje y 'monto_neto' a Valores. ¡Listo! Habrás demostrado la conexión directa con el cubo tabular VertiPaq frente al sínodo."),
+        ("5. ARGUMENTACIÓN TÉCNICA ANTE EL SÍNODO (RÚBRICA 25%)",
+         "'Profesor, implementamos una Constelación de Hechos (Fact Constellation) con 3 hechos (Ventas, Devoluciones, Instalaciones) y 4 dimensiones conformes. La medida DAX [Tasa de Devolución %] = DIVIDE(SUM(TablaFactDevoluciones[importe_devuelto]), [Ventas Brutas], 0) cruza ambos procesos limpiamente sin duplicidad de datos.'")
     ]
 
     r_g = 5

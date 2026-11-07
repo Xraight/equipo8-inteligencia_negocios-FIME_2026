@@ -140,15 +140,23 @@ export_csv('SELECT canal_id, canal_nombre FROM dim_canal;',
            ['canal_id', 'canal_nombre'],
            'PIA/03_dashboard_excel/datos_exportados/dim_canal.csv')
 
-export_csv('''SELECT (t.anio * 10000 + t.mes * 100 + 1) AS tiempo_id, t.mes_anio, f.sucursal_key, f.canal_id, p.categoria,
-                     COUNT(DISTINCT f.venta_id) as transacciones, SUM(f.cantidad) as cantidad, SUM(f.monto_bruto) as monto_bruto,
-                     SUM(f.monto_descuento) as monto_descuento, SUM(f.monto_neto) as monto_neto, SUM(f.costo_total) as costo_total,
+export_csv('''SELECT MIN(f.tiempo_id) as tiempo_id,
+                     f.producto_key,
+                     p.producto_id,
+                     p.categoria,
+                     f.sucursal_key,
+                     f.canal_id,
+                     COUNT(DISTINCT f.venta_id) as transacciones,
+                     SUM(f.cantidad) as cantidad,
+                     SUM(f.monto_bruto) as monto_bruto,
+                     SUM(f.monto_descuento) as monto_descuento,
+                     SUM(f.monto_neto) as monto_neto,
+                     SUM(f.costo_total) as costo_total,
                      SUM(f.utilidad_bruta) as utilidad_bruta
               FROM fact_ventas_detalle f
-              INNER JOIN dim_tiempo t ON f.tiempo_id = t.tiempo_id
               INNER JOIN dim_producto p ON f.producto_key = p.producto_key
-              GROUP BY t.anio, t.mes, t.mes_anio, f.sucursal_key, f.canal_id, p.categoria;''',
-           ['tiempo_id', 'mes_anio', 'sucursal_key', 'canal_id', 'categoria', 'transacciones', 'cantidad', 'monto_bruto', 'monto_descuento', 'monto_neto', 'costo_total', 'utilidad_bruta'],
+              GROUP BY f.producto_key, p.producto_id, p.categoria, f.sucursal_key, f.canal_id;''',
+           ['tiempo_id', 'producto_key', 'producto_id', 'categoria', 'sucursal_key', 'canal_id', 'transacciones', 'cantidad', 'monto_bruto', 'monto_descuento', 'monto_neto', 'costo_total', 'utilidad_bruta'],
            'PIA/03_dashboard_excel/datos_exportados/fact_ventas_modelo.csv')
 
 export_csv('SELECT devolucion_id, venta_id, tiempo_id, producto_key, sucursal_key, cliente_key, cantidad_devuelta, importe_devuelto, motivo FROM fact_devoluciones LIMIT 2000;',
