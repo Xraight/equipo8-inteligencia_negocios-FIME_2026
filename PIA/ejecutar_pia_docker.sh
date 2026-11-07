@@ -122,6 +122,43 @@ export_csv('SELECT motivo, COUNT(*) AS eventos, SUM(cantidad_devuelta) AS piezas
 export_csv('SELECT estatus_stock, COUNT(*) AS items, SUM(stock_actual) AS piezas_stock, SUM(deficit_unidades) AS deficit_piezas, SUM(valor_inventario_costo) AS valor_inventario FROM fact_inventario_snapshot GROUP BY estatus_stock;',
            ['estatus_stock', 'items', 'piezas_stock', 'deficit_piezas', 'valor_inventario'],
            'PIA/03_dashboard_excel/datos_exportados/kpi_inventario_resumen.csv')
+
+# Tablas dimensionales y modelo para Power Pivot
+export_csv('SELECT tiempo_id, fecha, anio, trimestre, trimestre_nombre, mes, mes_nombre, mes_anio, semana_anio, dia_mes, dia_semana, dia_semana_nombre, es_fin_semana FROM dim_tiempo;',
+           ['tiempo_id', 'fecha', 'anio', 'trimestre', 'trimestre_nombre', 'mes', 'mes_nombre', 'mes_anio', 'semana_anio', 'dia_mes', 'dia_semana', 'dia_semana_nombre', 'es_fin_semana'],
+           'PIA/03_dashboard_excel/datos_exportados/dim_tiempo.csv')
+
+export_csv('SELECT producto_key, producto_id, sku, producto, categoria, marca, costo, precio_lista, margen_teorico_pct, activo, requiere_instalacion FROM dim_producto;',
+           ['producto_key', 'producto_id', 'sku', 'producto', 'categoria', 'marca', 'costo', 'precio_lista', 'margen_teorico_pct', 'activo', 'requiere_instalacion'],
+           'PIA/03_dashboard_excel/datos_exportados/dim_producto.csv')
+
+export_csv('SELECT sucursal_key, sucursal_id, sucursal, ciudad, estado, m2, categoria_tamano, fecha_apertura FROM dim_sucursal;',
+           ['sucursal_key', 'sucursal_id', 'sucursal', 'ciudad', 'estado', 'm2', 'categoria_tamano', 'fecha_apertura'],
+           'PIA/03_dashboard_excel/datos_exportados/dim_sucursal.csv')
+
+export_csv('SELECT canal_id, canal_nombre FROM dim_canal;',
+           ['canal_id', 'canal_nombre'],
+           'PIA/03_dashboard_excel/datos_exportados/dim_canal.csv')
+
+export_csv('''SELECT (t.anio * 10000 + t.mes * 100 + 1) AS tiempo_id, t.mes_anio, f.sucursal_key, f.canal_id, p.categoria,
+                     COUNT(DISTINCT f.venta_id) as transacciones, SUM(f.cantidad) as cantidad, SUM(f.monto_bruto) as monto_bruto,
+                     SUM(f.monto_descuento) as monto_descuento, SUM(f.monto_neto) as monto_neto, SUM(f.costo_total) as costo_total,
+                     SUM(f.utilidad_bruta) as utilidad_bruta
+              FROM fact_ventas_detalle f
+              INNER JOIN dim_tiempo t ON f.tiempo_id = t.tiempo_id
+              INNER JOIN dim_producto p ON f.producto_key = p.producto_key
+              GROUP BY t.anio, t.mes, t.mes_anio, f.sucursal_key, f.canal_id, p.categoria;''',
+           ['tiempo_id', 'mes_anio', 'sucursal_key', 'canal_id', 'categoria', 'transacciones', 'cantidad', 'monto_bruto', 'monto_descuento', 'monto_neto', 'costo_total', 'utilidad_bruta'],
+           'PIA/03_dashboard_excel/datos_exportados/fact_ventas_modelo.csv')
+
+export_csv('SELECT devolucion_id, venta_id, tiempo_id, producto_key, sucursal_key, cliente_key, cantidad_devuelta, importe_devuelto, motivo FROM fact_devoluciones LIMIT 2000;',
+           ['devolucion_id', 'venta_id', 'tiempo_id', 'producto_key', 'sucursal_key', 'cliente_key', 'cantidad_devuelta', 'importe_devuelto', 'motivo'],
+           'PIA/03_dashboard_excel/datos_exportados/fact_devoluciones_muestra.csv')
+
+export_csv('SELECT instalacion_id, venta_id, tiempo_id, cliente_key, sucursal_key, dias_programados, dias_reales, dias_desviacion, cumplio_sla, satisfaccion FROM fact_instalaciones;',
+           ['instalacion_id', 'venta_id', 'tiempo_id', 'cliente_key', 'sucursal_key', 'dias_programados', 'dias_reales', 'dias_desviacion', 'cumplio_sla', 'satisfaccion'],
+           'PIA/03_dashboard_excel/datos_exportados/fact_instalaciones_completo.csv')
+
 "
 
 docker run --rm -v "$(pwd):/workspace" localhost/equipo8-u5-generator:latest python3 PIA/scripts_docker/generar_dashboard_excel.py

@@ -1,0 +1,18 @@
+sucursal_key,sucursal_id,sucursal,ciudad,estado,m2,categoria_tamano,fecha_apertura
+1,NO-ID,Sucursal Central / No Identificada,Monterrey,Nuevo LeÃ³n,1000,Mediana (1200-1600 m2),2020-01-01
+2,CE-S001,Sucursal Monterrey 1,Monterrey,Nuevo León,1124,PequeÃ±a (<1200 m2),2023-07-30
+3,CE-S002,Sucursal Apodaca 2,Apodaca,Nuevo León,1717,Grande (>1600 m2),2014-06-13
+4,CE-S003,Sucursal San Nicolás 3,San Nicolás,Nuevo León,1147,PequeÃ±a (<1200 m2),2021-04-02
+5,CE-S004,Sucursal Guadalupe 4,Guadalupe,Nuevo León,1277,Mediana (1200-1600 m2),2014-11-08
+6,CE-S005,Sucursal Escobedo 5,Escobedo,Nuevo León,1765,Grande (>1600 m2),2016-04-01
+7,CE-S006,Sucursal Santa Catarina 6,Santa Catarina,Nuevo León,734,PequeÃ±a (<1200 m2),2019-06-17
+8,CE-S007,Sucursal San Pedro 7,San Pedro,Nuevo León,866,PequeÃ±a (<1200 m2),2015-03-29
+9,CE-S008,Sucursal Saltillo 8,Saltillo,Coahuila,2180,Grande (>1600 m2),2014-10-12
+10,CE-S009,Sucursal Reynosa 9,Reynosa,Tamaulipas,2184,Grande (>1600 m2),2021-04-10
+11,CE-S010,Sucursal Tampico 10,Tampico,Tamaulipas,491,PequeÃ±a (<1200 m2),2015-08-13
+12,CE-S011,Sucursal Monterrey 11,Monterrey,Nuevo León,1666,Grande (>1600 m2),2024-02-22
+13,CE-S012,Sucursal Apodaca 12,Apodaca,Nuevo León,2148,Grande (>1600 m2),2022-08-11
+14,CE-S013,Sucursal San Nicolás 13,San Nicolás,Nuevo León,984,PequeÃ±a (<1200 m2),2013-07-24
+15,CE-S014,Sucursal Guadalupe 14,Guadalupe,Nuevo León,1299,Mediana (1200-1600 m2),2022-12-10
+16,CE-S015,Sucursal Escobedo 15,Escobedo,Nuevo León,823,PequeÃ±a (<1200 m2),2024-05-03
+17,CE-S016,Sucursal Santa Catarina 16,Santa Catarina,Nuevo León,2106,Grande (>1600 m2),2020-09-04
