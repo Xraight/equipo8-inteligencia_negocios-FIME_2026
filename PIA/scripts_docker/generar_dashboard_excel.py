@@ -2,20 +2,13 @@
 # PROYECTO: PRODUCTO INTEGRADOR DE APRENDIZAJE (PIA) — CASA&ESTILO
 # ARCHIVO: generar_dashboard_excel.py
 # AUTOR: Equipo 8 — Analítica e Inteligencia de Negocios (FIME - UANL)
-# ENTORNO: Python 3.12 / Docker (openpyxl)
+# ENTORNO: Contenedor Docker (python:3.12-slim)
 # ==============================================================================
 # FUNCIÓN GENERAL:
-# Generar el libro de trabajo corporativo oficial `PIA_Dashboard_CasaEstilo_Equipo08.xlsx`
-# con Tablas Oficiales de Excel (ListObjects), catálogo DAX, guía de activación
-# de Power Pivot y Dashboard Ejecutivo interactivo.
-#
-# FUNCIÓN ESPECÍFICA:
-# 1. Configurar pestañas: PORTADA, GUIA_POWERPIVOT, DASHBOARD_EJECUTIVO,
-#    ANALISIS_COMERCIAL, OPERACIONES_Y_CALIDAD, FACT_VENTAS_MODELO,
-#    DIM_PRODUCTO, DIM_SUCURSAL, DIM_CANAL, DIM_TIEMPO, FACT_DEVOLUCIONES,
-#    FACT_INSTALACIONES y DICCIONARIO_DAX.
-# 2. Agregar Tablas Oficiales ListObjects reconocibles por Power Pivot en 1 clic.
-# 3. Aplicar paleta ejecutiva institucional (Deep Navy #1A365D, Gold #D69E2E).
+# Genera el libro de trabajo oficial `PIA_Dashboard_CasaEstilo_Equipo08.xlsx`
+# integrando un Tablero de Control Ejecutivo con 7 Gráficos Nativos de Excel
+# (Barras, Columnas, Anillos y Líneas de Tendencia), Tablas Oficiales
+# ListObjects para Power Pivot, y la memoria técnica de medidas DAX.
 # ==============================================================================
 
 import os
@@ -24,6 +17,7 @@ import openpyxl
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.table import Table, TableStyleInfo
+from openpyxl.chart import BarChart, LineChart, DoughnutChart, Reference
 
 DATA_DIR = "PIA/03_dashboard_excel/datos_exportados"
 OUT_FILE = "PIA/PIA_Dashboard_CasaEstilo_Equipo08.xlsx"
@@ -39,14 +33,14 @@ C_GREEN = "2F855A"      # Verde éxito
 C_RED = "C53030"        # Rojo alerta
 C_CARD_BG = "EDF2F7"    # Fondo tarjetas
 
-font_title = Font(name="Calibri", size=17, bold=True, color=C_WHITE)
-font_subtitle = Font(name="Calibri", size=11, italic=True, color=C_GOLD)
-font_section = Font(name="Calibri", size=12, bold=True, color=C_NAVY)
+font_title = Font(name="Calibri", size=16, bold=True, color=C_WHITE)
+font_subtitle = Font(name="Calibri", size=10.5, italic=True, color=C_GOLD)
+font_section = Font(name="Calibri", size=11.5, bold=True, color=C_NAVY)
 font_header = Font(name="Calibri", size=10, bold=True, color=C_WHITE)
-font_bold = Font(name="Calibri", size=10, bold=True, color=C_SLATE)
-font_regular = Font(name="Calibri", size=9.5, color=C_SLATE)
-font_kpi_val = Font(name="Calibri", size=15, bold=True, color=C_NAVY)
-font_kpi_lbl = Font(name="Calibri", size=9, bold=True, color="718096")
+font_bold = Font(name="Calibri", size=9.5, bold=True, color=C_SLATE)
+font_regular = Font(name="Calibri", size=9, color=C_SLATE)
+font_kpi_val = Font(name="Calibri", size=14, bold=True, color=C_NAVY)
+font_kpi_lbl = Font(name="Calibri", size=8.5, bold=True, color="718096")
 
 fill_navy = PatternFill(start_color=C_NAVY, end_color=C_NAVY, fill_type="solid")
 fill_gold = PatternFill(start_color=C_GOLD, end_color=C_GOLD, fill_type="solid")
@@ -76,92 +70,95 @@ def create_workbook():
     wb = openpyxl.Workbook()
     default_sheet = wb.active
 
-    # --------------------------------------------------------------------------
+    # ==========================================================================
     # 1. HOJA PORTADA
-    # --------------------------------------------------------------------------
-    ws_portada = wb.create_sheet(title="PORTADA")
+    # ==========================================================================
+    ws_portada = wb.create_sheet(title="PORTADA", index=0)
     ws_portada.views.sheetView[0].showGridLines = False
 
-    ws_portada.merge_cells("B2:J3")
-    top_cell = ws_portada["B2"]
-    top_cell.value = "UNIVERSIDAD AUTÓNOMA DE NUEVO LEÓN | FACULTAD DE INGENIERÍA MECÁNICA Y ELÉCTRICA"
-    top_cell.font = Font(name="Calibri", size=13, bold=True, color=C_GOLD)
-    top_cell.fill = fill_navy
-    top_cell.alignment = align_center
-
-    ws_portada.merge_cells("B4:J5")
-    title_cell = ws_portada["B4"]
-    title_cell.value = "PRODUCTO INTEGRADOR DE APRENDIZAJE — SOLUCIÓN BI EMPRESARIAL"
-    title_cell.font = Font(name="Calibri", size=16, bold=True, color=C_WHITE)
+    # Encabezado Institucional
+    ws_portada.merge_cells("B2:I3")
+    title_cell = ws_portada["B2"]
+    title_cell.value = "UNIVERSIDAD AUTÓNOMA DE NUEVO LEÓN — FACULTAD DE INGENIERÍA MECÁNICA Y ELÉCTRICA"
+    title_cell.font = font_title
     title_cell.fill = fill_navy
     title_cell.alignment = align_center
 
-    ws_portada.merge_cells("B6:J6")
-    sub_cell = ws_portada["B6"]
-    sub_cell.value = "Caso de Negocio: Casa&Estilo (Sector Muebles y Decoración) | Noviembre 2026"
-    sub_cell.font = Font(name="Calibri", size=11, bold=True, color=C_GOLD)
+    ws_portada.merge_cells("B4:I4")
+    sub_cell = ws_portada["B4"]
+    sub_cell.value = "Analítica e Inteligencia de Negocios · Producto Integrador de Aprendizaje (PIA) · Enero - Junio 2026"
+    sub_cell.font = font_subtitle
     sub_cell.fill = fill_navy
     sub_cell.alignment = align_center
 
-    datos_meta = [
-        ("Unidad de Aprendizaje:", "Analítica e Inteligencia de Negocios"),
-        ("Ponderación Académica:", "30% de la Calificación Total del Curso"),
-        ("Equipo Evaluado:", "Equipo 8"),
-        ("Empresa Asignada:", "Casa&Estilo (Código: CE)"),
-        ("Data Mart Analítico:", "MySQL 8.0+ en Docker (Esquema Estrella / Constelación)"),
-        ("Modelo de Inteligencia:", "Microsoft Excel 365 (Power Pivot & 10 Medidas DAX)"),
-        ("Auditoría de Registros:", "140,000 Ventas | 331,758 Líneas Detalle (100.00% Conciliado)"),
-        ("Fecha de Entrega:", "Noviembre 2026")
+    # Metadatos del Proyecto
+    meta = [
+        ("Empresa Evaluada:", "Casa&Estilo S.A. de C.V. (Retail Omnicanal de Mobiliario y Decoración)"),
+        ("Equipo de Trabajo:", "Equipo 8"),
+        ("Integrantes:", "Ángel Butzmann (Líder BI), Analistas de Datos y Modeladores Dimensionales"),
+        ("Data Mart Dimensional:", "MySQL 8.0 (ce_bi) — 331,758 transacciones de detalle conciliadas al $0.00"),
+        ("Tecnología Tabular:", "Microsoft Power Pivot / VertiPaq & Catálogo de 10 Medidas DAX"),
+        ("Fecha de Entrega:", "Noviembre 2026"),
+        ("Ponderación Académica:", "30% de la Calificación Final del Curso")
     ]
-    r = 8
-    for label, val in datos_meta:
-        ws_portada.cell(row=r, column=3, value=label).font = font_bold
-        ws_portada.cell(row=r, column=5, value=val).font = font_regular
+    r = 6
+    for label, val in meta:
+        ws_portada.cell(row=r, column=2, value=label).font = font_bold
+        ws_portada.cell(row=r, column=4, value=val).font = font_regular
         r += 1
 
-    r = 17
-    ws_portada.cell(row=r, column=3, value="MAPA DE NAVEGACIÓN DEL LIBRO ANALÍTICO:").font = font_section
-    r += 2
+    # Índice de Navegación del Libro
+    r += 1
+    ws_portada.cell(row=r, column=2, value="MAPA DEL LIBRO Y GUÍA DE NAVEGACIÓN").font = font_section
+    r += 1
+
     menu = [
-        ("GUIA_POWERPIVOT", "Instrucciones de activación en 1 clic y defensa del Esquema Estrella"),
-        ("DASHBOARD_EJECUTIVO", "Tablero de mando principal con Scorecard de KPIs, tendencias y Pareto"),
-        ("ANALISIS_COMERCIAL", "Desglose de márgenes, ventas brutas vs netas y canales de venta"),
-        ("OPERACIONES_Y_CALIDAD", "Diagnóstico de devoluciones, SLA de instalaciones y alertas de stock"),
-        ("DICCIONARIO_DAX", "Memoria técnica de formulaciones, medidas DAX y lógica de cálculo"),
-        ("FACT_VENTAS_MODELO", "Tabla de hechos con llaves foráneas para el Modelo de Datos (11,086 filas)"),
+        ("GUIA_POWERPIVOT", "Instrucciones de activación en 1 clic y defensa del Esquema Estrella ante el profesor"),
+        ("DASHBOARD_EJECUTIVO", "Tablero de mando C-Level con Scorecard, Gráfico de Categorías, Anillo Omnicanal y Tendencia 36 Meses"),
+        ("ANALISIS_COMERCIAL", "Ranking de 16 Sucursales por Venta Neta ($) y Productividad por metro cuadrado ($/m2)"),
+        ("OPERACIONES_Y_CALIDAD", "Diagnóstico de Devoluciones por Causa Raíz y Cumplimiento de SLA Logístico de Instalaciones"),
+        ("DICCIONARIO_DAX", "Memoria técnica de las 10 medidas DAX oficiales y formulaciones analíticas"),
+        ("FACT_VENTAS_MODELO", "Tabla de hechos de ventas con claves foráneas para Power Pivot (11,086 filas)"),
         ("DIM_PRODUCTO", "Catálogo dimensional de 1,340 productos con costos y precios"),
-        ("DIM_SUCURSAL", "Dimensión de las 16 sucursales con superficie en m2 y formatos"),
-        ("DIM_CANAL", "Dimensión de canales de venta (Tienda, Web, App)"),
-        ("DIM_TIEMPO", "Calendario continuo 2024-2026 (1,096 días)")
+        ("DIM_SUCURSAL", "Dimensión de las 16 sucursales físicas con superficie en m2 y formatos"),
+        ("DIM_CANAL", "Dimensión de canales de venta (Tienda Física, Web, App Móvil)"),
+        ("DIM_TIEMPO", "Calendario continuo 2022-2024 (1,096 días)")
     ]
     for pestana, desc in menu:
         c1 = ws_portada.cell(row=r, column=3, value=f"▶ {pestana}")
-        c1.font = Font(name="Calibri", size=10, bold=True, color=C_ACCENT_BLUE, underline="single")
+        c1.font = Font(name="Calibri", size=9.5, bold=True, color=C_ACCENT_BLUE, underline="single")
         ws_portada.cell(row=r, column=5, value=desc).font = font_regular
         r += 1
 
-    # --------------------------------------------------------------------------
-    # 2. HOJA GUIA_POWERPIVOT (EXPLICACIÓN Y DEFENSA ANTE EL PROFESOR)
-    # --------------------------------------------------------------------------
+    # ==========================================================================
+    # 2. HOJA GUIA_POWERPIVOT (DEFENSA Y ACTIVACIÓN EN VIVO)
+    # ==========================================================================
     ws_guia = wb.create_sheet(title="GUIA_POWERPIVOT")
     ws_guia.views.sheetView[0].showGridLines = False
 
     ws_guia.merge_cells("B2:J3")
     g_hdr = ws_guia["B2"]
-    g_hdr.value = "GUÍA DE ACTIVACIÓN Y DEMOSTRACIÓN DE POWER PIVOT (DEFENSA ACADÉMICA)"
+    g_hdr.value = "GUÍA DE DEMOSTRACIÓN Y DEFENSA DE POWER PIVOT ANTE EL PROFESOR"
     g_hdr.font = font_title
     g_hdr.fill = fill_navy
     g_hdr.alignment = align_center
 
     instrucciones = [
-        ("¿POR QUÉ EXCEL REQUIERE ESTE PASO?",
-         "Este archivo fue generado en un entorno contenedorizado Docker (Linux). Las librerías de código abierto (openpyxl) no pueden compilar el motor binario propietario VertiPaq de Microsoft. Por ello, todas las hojas de datos fueron creadas como Tablas Oficiales de Excel (ListObjects) listas para incorporarse al Modelo de Datos."),
-        ("OPCIÓN A: ACTIVACIÓN EN 1 CLIC CON MACRO VBA (RECOMENDADA)",
-         "1. Presiona Alt + F11 en Excel.\n2. Ve a Archivo -> Importar archivo... y selecciona 'PIA/03_dashboard_excel/construir_modelo_powerpivot_pia.bas'.\n3. Presiona Alt + F8, selecciona 'ConstruirModeloPowerPivotPIA' y haz clic en Ejecutar.\n✔ En 3 segundos creará las relaciones 1:N en la Vista de Diagrama, registrará las 10 medidas DAX y generará la tabla dinámica del modelo."),
-        ("OPCIÓN B: ACTIVACIÓN MANUAL NATIVA EN 2 MINUTOS (MODO AULA)",
-         "1. Haz clic en la tabla de la hoja 'FACT_VENTAS_MODELO'. En la pestaña 'Power Pivot', pulsa 'Agregar a modelo de datos'.\n2. Repite en 'DIM_PRODUCTO', 'DIM_SUCURSAL', 'DIM_CANAL' y 'DIM_TIEMPO'.\n3. En Power Pivot, pulsa 'Vista de diagrama' y arrastra las relaciones 1:N (sucursal_key, canal_id, tiempo_id).\n4. En 'Medidas' -> 'Nueva medida', pega cualquiera de las 10 fórmulas DAX documentadas en la hoja DICCIONARIO_DAX."),
-        ("CÓMO DEFENDER EL MODELO ANTE EL PROFESOR",
-         "Abre [Power Pivot] -> [Administrar] -> [Vista de diagrama]. Muestra el Esquema Estrella con la tabla central FactVentas y sus relaciones 1:N. Luego muestra la lista de campos con el icono de función (fx) de las medidas DAX.")
+        ("1. ¿QUÉ CONTIENE ESTE LIBRO DE TRABAJO?",
+         "Este archivo incluye un Tablero de Control Ejecutivo 100% interactivo con 7 gráficos nativos en las pestañas 'DASHBOARD_EJECUTIVO', 'ANALISIS_COMERCIAL' y 'OPERACIONES_Y_CALIDAD'. Además, todas las hojas de datos están estructuradas como Tablas Oficiales de Excel (ListObjects) listas para integrarse en el Modelo de Datos de Power Pivot."),
+        ("2. CÓMO MOSTRAR EL ESQUEMA ESTRELLA EN VIVO (2 MINUTOS)",
+         "Paso 1: Ve a la pestaña 'FACT_VENTAS_MODELO', haz clic dentro de la tabla y en la pestaña superior 'Power Pivot', pulsa 'Agregar a modelo de datos'.\n"
+         "Paso 2: Repite el mismo paso para 'DIM_PRODUCTO', 'DIM_SUCURSAL', 'DIM_CANAL' y 'DIM_TIEMPO'.\n"
+         "Paso 3: En la ventana de Power Pivot, haz clic en 'Vista de diagrama' (Diagram View).\n"
+         "Paso 4: Arrastra las llaves con el cursor para unir las tablas:\n"
+         "  • sucursal_key de TablaDimSucursal -> sucursal_key de TablaFactVentas\n"
+         "  • canal_id de TablaDimCanal -> canal_id de TablaFactVentas\n"
+         "  • tiempo_id de TablaDimTiempo -> tiempo_id de TablaFactVentas\n"
+         "✔ ¡Excel dibujará de inmediato las líneas de relación 1 a Varios (1:*) del Esquema Estrella!"),
+        ("3. CÓMO CREAR UN GRÁFICO DINÁMICO EN 10 SEGUNDOS",
+         "En la misma ventana de Power Pivot, en la pestaña Inicio, haz clic en 'Tabla dinámica' -> 'Gráfico dinámico' -> 'Nueva hoja'. Arrastra 'categoria' a Eje y 'monto_neto' a Valores. ¡Listo! Habrás demostrado la conexión directa con el cubo tabular VertiPaq frente al sínodo."),
+        ("4. ARGUMENTACIÓN TÉCNICA ANTE EL SÍNODO (RÚBRICA 25%)",
+         "'Profesor, nuestro modelo dimensional en estrella conecta la tabla de hechos FactVentas con 4 dimensiones conformes. El cálculo de margen se realiza mediante la medida DAX [Margen Bruto %] = DIVIDE([Utilidad Bruta], [Ventas Netas], 0), evitando promedios simples y garantizando rigor financiero en las 16 sucursales y 3 canales.'")
     ]
 
     r_g = 5
@@ -180,19 +177,20 @@ def create_workbook():
         c_sd.alignment = Alignment(horizontal="left", vertical="top", wrap_text=True)
         r_g += 4
 
-    # --------------------------------------------------------------------------
-    # 3. HOJA DASHBOARD_EJECUTIVO
-    # --------------------------------------------------------------------------
+    # ==========================================================================
+    # 3. HOJA DASHBOARD_EJECUTIVO (SCORECARD + 3 GRÁFICOS NATIVOS)
+    # ==========================================================================
     ws_dash = wb.create_sheet(title="DASHBOARD_EJECUTIVO")
     ws_dash.views.sheetView[0].showGridLines = True
 
-    ws_dash.merge_cells("B2:K3")
+    ws_dash.merge_cells("B2:P3")
     h_cell = ws_dash["B2"]
     h_cell.value = "CASA&ESTILO — TABLERO DE CONTROL EJECUTIVO Y SCORECARD ESTRATÉGICO"
     h_cell.font = font_title
     h_cell.fill = fill_navy
     h_cell.alignment = align_center
 
+    # Scorecard de KPIs
     kpis = [
         ("VENTAS NETAS", "$1,310,746,491.89", "Ingreso real de caja", C_NAVY, "B", "C"),
         ("UTILIDAD BRUTA", "$280,874,853.71", "Beneficio comercial", C_GREEN, "D", "E"),
@@ -211,7 +209,7 @@ def create_workbook():
         ws_dash.merge_cells(f"{c_start}6:{c_end}6")
         cell_v = ws_dash[f"{c_start}6"]
         cell_v.value = val
-        cell_v.font = Font(name="Calibri", size=15, bold=True, color=color)
+        cell_v.font = Font(name="Calibri", size=14, bold=True, color=color)
         cell_v.fill = fill_card
         cell_v.alignment = align_center
 
@@ -222,7 +220,7 @@ def create_workbook():
         cell_n.fill = fill_card
         cell_n.alignment = align_center
 
-    # Desempeño por Categoría
+    # 1. Desempeño por Categoría
     ws_dash.cell(row=9, column=2, value="1. DESEMPEÑO COMERCIAL POR CATEGORÍA DE PRODUCTO").font = font_section
 
     cat_headers, cat_rows = read_csv_data("kpi_categorias.csv")
@@ -250,7 +248,7 @@ def create_workbook():
                 ws_dash.cell(row=r_cat, column=c_idx).fill = fill_zebra
         r_cat += 1
 
-    # Totales Categoría
+    # Total Categoría
     ws_dash.cell(row=r_cat, column=2, value="TOTAL GENERAL").font = font_bold
     ws_dash.cell(row=r_cat, column=2).fill = fill_gold
     ws_dash.cell(row=r_cat, column=3, value="=SUM(C12:C18)").number_format = "#,##0"
@@ -266,8 +264,23 @@ def create_workbook():
         c.fill = fill_gold
         c.border = border_thin
 
-    # Matriz Omnicanal
-    r_chan_title = r_cat + 3
+    # Gráfico 1: Columnas de Ventas Netas y Utilidad por Categoría
+    chart_cat = BarChart()
+    chart_cat.type = "col"
+    chart_cat.style = 10
+    chart_cat.title = "Ventas Netas y Utilidad Bruta por Categoría ($ MXN)"
+    chart_cat.y_axis.title = "Monto ($ MXN)"
+    chart_cat.x_axis.title = "Categoría"
+    data_cat = Reference(ws_dash, min_col=5, min_row=11, max_col=6, max_row=18)
+    cats_cat = Reference(ws_dash, min_col=2, min_row=12, max_row=18)
+    chart_cat.add_data(data_cat, titles_from_data=True)
+    chart_cat.set_categories(cats_cat)
+    chart_cat.width = 16
+    chart_cat.height = 10
+    ws_dash.add_chart(chart_cat, "L9")
+
+    # 2. Desempeño Omnicanal
+    r_chan_title = r_cat + 2
     ws_dash.cell(row=r_chan_title, column=2, value="2. DESEMPEÑO OMNICANAL (TIENDA VS WEB VS APP)").font = font_section
 
     chan_headers, chan_rows = read_csv_data("kpi_omnicanalidad.csv")
@@ -307,15 +320,67 @@ def create_workbook():
         c.fill = fill_gold
         c.border = border_thin
 
-    # --------------------------------------------------------------------------
-    # 4. HOJA ANALISIS_COMERCIAL
-    # --------------------------------------------------------------------------
+    # Gráfico 2: Anillo de Participación de Ventas por Canal
+    chart_chan = DoughnutChart()
+    chart_chan.title = "Participación de Ventas por Canal Comercial"
+    chart_chan.style = 2
+    data_chan = Reference(ws_dash, min_col=5, min_row=r_chan_title+2, max_row=r_ch-1)
+    cats_chan = Reference(ws_dash, min_col=2, min_row=r_chan_title+3, max_row=r_ch-1)
+    chart_chan.add_data(data_chan, titles_from_data=True)
+    chart_chan.set_categories(cats_chan)
+    chart_chan.width = 16
+    chart_chan.height = 9.5
+    ws_dash.add_chart(chart_chan, "L21")
+
+    # 3. Tendencia Histórica Mensual (2022-2024)
+    r_trend_title = r_ch + 2
+    ws_dash.cell(row=r_trend_title, column=2, value="3. EVOLUCIÓN HISTÓRICA MENSUAL (36 MESES 2022-2024)").font = font_section
+
+    trend_headers, trend_rows = read_csv_data("kpi_resumen_mensual.csv")
+    trend_cols = ["Mes / Año", "Transacciones", "Venta Neta ($ MXN)", "Utilidad Bruta ($ MXN)"]
+    for c_idx, h_name in enumerate(trend_cols, start=2):
+        cell = ws_dash.cell(row=r_trend_title+2, column=c_idx, value=h_name)
+        cell.font = font_header
+        cell.fill = fill_navy
+        cell.alignment = align_center
+        cell.border = border_thin
+
+    r_tr = r_trend_title + 3
+    for r_data in trend_rows:
+        ws_dash.cell(row=r_tr, column=2, value=r_data[0]).alignment = align_center
+        ws_dash.cell(row=r_tr, column=3, value=int(r_data[1])).number_format = "#,##0"
+        ws_dash.cell(row=r_tr, column=4, value=float(r_data[5])).number_format = "$#,##0.00"
+        ws_dash.cell(row=r_tr, column=5, value=float(r_data[7])).number_format = "$#,##0.00"
+        for c_idx in range(2, 6):
+            ws_dash.cell(row=r_tr, column=c_idx).border = border_thin
+            ws_dash.cell(row=r_tr, column=c_idx).font = font_regular
+            if r_tr % 2 == 1:
+                ws_dash.cell(row=r_tr, column=c_idx).fill = fill_zebra
+        r_tr += 1
+
+    # Gráfico 3: Línea de Tendencia Mensual de Ventas y Utilidad
+    chart_trend = LineChart()
+    chart_trend.title = "Evolución Histórica de Ventas Netas y Utilidad Bruta (2022 - 2024)"
+    chart_trend.style = 13
+    chart_trend.y_axis.title = "Monto ($ MXN)"
+    chart_trend.x_axis.title = "Periodo Mensual"
+    data_tr = Reference(ws_dash, min_col=4, min_row=r_trend_title+2, max_col=5, max_row=r_tr-1)
+    cats_tr = Reference(ws_dash, min_col=2, min_row=r_trend_title+3, max_row=r_tr-1)
+    chart_trend.add_data(data_tr, titles_from_data=True)
+    chart_trend.set_categories(cats_tr)
+    chart_trend.width = 22
+    chart_trend.height = 14
+    ws_dash.add_chart(chart_trend, "G" + str(r_trend_title+2))
+
+    # ==========================================================================
+    # 4. HOJA ANALISIS_COMERCIAL (RANKING SUCURSALES + 2 GRÁFICOS)
+    # ==========================================================================
     ws_com = wb.create_sheet(title="ANALISIS_COMERCIAL")
     ws_com.views.sheetView[0].showGridLines = True
 
-    ws_com.merge_cells("B2:J3")
+    ws_com.merge_cells("B2:U3")
     c_hdr = ws_com["B2"]
-    c_hdr.value = "CASA&ESTILO — ANÁLISIS DE RENTABILIDAD, DESCUENTOS Y SUCURSALES"
+    c_hdr.value = "CASA&ESTILO — ANÁLISIS DE PRODUCTIVIDAD Y RENTABILIDAD POR SUCURSAL"
     c_hdr.font = font_title
     c_hdr.fill = fill_navy
     c_hdr.alignment = align_center
@@ -365,19 +430,51 @@ def create_workbook():
         c.fill = fill_gold
         c.border = border_thin
 
-    # --------------------------------------------------------------------------
-    # 5. HOJA OPERACIONES_Y_CALIDAD
-    # --------------------------------------------------------------------------
+    # Gráfico 4: Ranking de Sucursales por Venta Neta (Barras Horizontales)
+    chart_suc = BarChart()
+    chart_suc.type = "bar"
+    chart_suc.style = 10
+    chart_suc.title = "Ranking de Sucursales por Venta Neta ($ MXN)"
+    chart_suc.x_axis.title = "Venta Neta ($ MXN)"
+    chart_suc.y_axis.title = "Sucursal"
+    data_suc = Reference(ws_com, min_col=9, min_row=7, max_row=23)
+    cats_suc = Reference(ws_com, min_col=3, min_row=8, max_row=23)
+    chart_suc.add_data(data_suc, titles_from_data=True)
+    chart_suc.set_categories(cats_suc)
+    chart_suc.legend = None
+    chart_suc.width = 17
+    chart_suc.height = 15
+    ws_com.add_chart(chart_suc, "N5")
+
+    # Gráfico 5: Productividad Comercial por Metro Cuadrado ($/m2)
+    chart_m2 = BarChart()
+    chart_m2.type = "col"
+    chart_m2.style = 11
+    chart_m2.title = "Productividad Comercial por Metro Cuadrado ($ / m²)"
+    chart_m2.y_axis.title = "Venta por m² ($ MXN)"
+    chart_m2.x_axis.title = "Sucursal"
+    data_m2 = Reference(ws_com, min_col=10, min_row=7, max_row=23)
+    chart_m2.add_data(data_m2, titles_from_data=True)
+    chart_m2.set_categories(cats_suc)
+    chart_m2.legend = None
+    chart_m2.width = 17
+    chart_m2.height = 11
+    ws_com.add_chart(chart_m2, "N22")
+
+    # ==========================================================================
+    # 5. HOJA OPERACIONES_Y_CALIDAD (DEVOLUCIONES + SLA INSTALACIONES + 2 GRÁFICOS)
+    # ==========================================================================
     ws_ops = wb.create_sheet(title="OPERACIONES_Y_CALIDAD")
     ws_ops.views.sheetView[0].showGridLines = True
 
-    ws_ops.merge_cells("B2:J3")
+    ws_ops.merge_cells("B2:R3")
     o_hdr = ws_ops["B2"]
     o_hdr.value = "CASA&ESTILO — CALIDAD, DEVOLUCIONES Y NIVEL DE SERVICIO LOGÍSTICO"
     o_hdr.font = font_title
     o_hdr.fill = fill_navy
     o_hdr.alignment = align_center
 
+    # 1. Motivos de Devolución
     ws_ops.cell(row=5, column=2, value="1. ANÁLISIS DE CAUSA RAÍZ DE DEVOLUCIONES (COSTO DE NO CALIDAD)").font = font_section
 
     dev_headers, dev_rows = read_csv_data("kpi_devoluciones_motivos.csv")
@@ -413,6 +510,19 @@ def create_workbook():
         c.fill = fill_gold
         c.border = border_thin
 
+    # Gráfico 6: Anillo de Motivos de Devolución
+    chart_dev = DoughnutChart()
+    chart_dev.title = "Distribución del Costo de Devoluciones por Motivo"
+    chart_dev.style = 2
+    data_dev = Reference(ws_ops, min_col=5, min_row=7, max_row=12)
+    cats_dev = Reference(ws_ops, min_col=2, min_row=8, max_row=12)
+    chart_dev.add_data(data_dev, titles_from_data=True)
+    chart_dev.set_categories(cats_dev)
+    chart_dev.width = 15
+    chart_dev.height = 9.5
+    ws_ops.add_chart(chart_dev, "H5")
+
+    # 2. SLA de Instalaciones
     ws_ops.cell(row=15, column=2, value="2. DESEMPEÑO LOGÍSTICO Y SLA DE INSTALACIONES (6,500 SERVICIOS)").font = font_section
 
     sla_headers, sla_rows = read_csv_data("kpi_instalaciones_sla.csv")
@@ -447,22 +557,35 @@ def create_workbook():
                 ws_ops.cell(row=r_sla, column=col_idx).fill = fill_zebra
         r_sla += 1
 
-    # --------------------------------------------------------------------------
+    # Gráfico 7: Cumplimiento de SLA por Sucursal
+    chart_sla = BarChart()
+    chart_sla.type = "col"
+    chart_sla.style = 12
+    chart_sla.title = "Cumplimiento de SLA de Instalaciones por Sucursal (%)"
+    chart_sla.y_axis.title = "% Entregas a Tiempo"
+    chart_sla.x_axis.title = "Sucursal"
+    data_sla = Reference(ws_ops, min_col=6, min_row=17, max_row=33)
+    cats_sla = Reference(ws_ops, min_col=2, min_row=18, max_row=33)
+    chart_sla.add_data(data_sla, titles_from_data=True)
+    chart_sla.set_categories(cats_sla)
+    chart_sla.legend = None
+    chart_sla.width = 17
+    chart_sla.height = 13
+    ws_ops.add_chart(chart_sla, "K16")
+
+    # ==========================================================================
     # 6. HOJAS DIMENSIONALES CON TABLAS OFICIALES ListObjects
-    # --------------------------------------------------------------------------
-    # Función auxiliar para crear hojas con Tablas ListObject
+    # ==========================================================================
     def add_table_sheet(sheet_title, table_name, csv_filename, style_name="TableStyleMedium9"):
         ws = wb.create_sheet(title=sheet_title)
         headers, rows = read_csv_data(csv_filename)
 
-        # Escribir encabezados
         for c_idx, h in enumerate(headers, start=1):
             cell = ws.cell(row=1, column=c_idx, value=h)
             cell.font = font_header
             cell.fill = fill_navy
             cell.alignment = align_center
 
-        # Escribir filas con tipos adecuados
         for r_idx, row in enumerate(rows, start=2):
             for c_idx, val in enumerate(row, start=1):
                 cell = ws.cell(row=r_idx, column=c_idx)
@@ -475,7 +598,6 @@ def create_workbook():
                     cell.value = val
                 cell.font = font_regular
 
-        # Crear ListObject oficial de Excel
         last_col = get_column_letter(len(headers))
         last_row = len(rows) + 1
         tab_range = f"A1:{last_col}{last_row}"
@@ -491,7 +613,6 @@ def create_workbook():
         ws.add_table(excel_tab)
         return ws
 
-    # Tablas del Modelo Power Pivot
     add_table_sheet("FACT_VENTAS_MODELO", "TablaFactVentas", "fact_ventas_modelo.csv", "TableStyleMedium2")
     add_table_sheet("DIM_PRODUCTO", "TablaDimProducto", "dim_producto.csv", "TableStyleMedium9")
     add_table_sheet("DIM_SUCURSAL", "TablaDimSucursal", "dim_sucursal.csv", "TableStyleMedium9")
@@ -500,9 +621,9 @@ def create_workbook():
     add_table_sheet("FACT_DEVOLUCIONES", "TablaFactDevoluciones", "fact_devoluciones_muestra.csv", "TableStyleMedium2")
     add_table_sheet("FACT_INSTALACIONES", "TablaFactInstalaciones", "fact_instalaciones_completo.csv", "TableStyleMedium2")
 
-    # --------------------------------------------------------------------------
+    # ==========================================================================
     # 7. HOJA DICCIONARIO_DAX
-    # --------------------------------------------------------------------------
+    # ==========================================================================
     ws_dax = wb.create_sheet(title="DICCIONARIO_DAX")
     ws_dax.views.sheetView[0].showGridLines = True
 
@@ -554,17 +675,16 @@ def create_workbook():
         for col in ws.columns:
             max_len = 0
             col_letter = get_column_letter(col[0].column)
-            # Limitar chequeo para tablas grandes para no ralentizar
             for cell in list(col)[:50]:
                 val = str(cell.value or '')
                 if len(val) > max_len and len(val) < 60:
                     max_len = len(val)
-            ws.column_dimensions[col_letter].width = max(max_len + 3, 12)
+            ws.column_dimensions[col_letter].width = max(max_len + 3, 11)
 
     wb.remove(default_sheet)
     os.makedirs(os.path.dirname(OUT_FILE), exist_ok=True)
     wb.save(OUT_FILE)
-    print(f"✅ Libro Excel generado con Tablas Oficiales ListObjects: {OUT_FILE}")
+    print(f"✅ Libro Excel generado exitosamente con 7 Gráficos Nativos y Tablas Oficiales: {OUT_FILE}")
 
 
 if __name__ == "__main__":
