@@ -8,11 +8,13 @@ Attribute VB_Name = "ModuloPowerPivotPIA"
 ' ==============================================================================
 ' FUNCION GENERAL:
 ' Automatiza la construccion del Modelo de Datos Tabular VertiPaq en Power Pivot:
-' 1. Carga las 5 Tablas Oficiales (ListObjects) al Modelo de Datos nativo.
-' 2. Crea las relaciones 1:N en la Vista de Diagrama (Esquema Estrella).
-' 3. Registra las 10 medidas DAX oficiales de Casa&Estilo.
-' 4. Genera una Tabla Dinamica OLAP nativa en B5 conectada a ThisWorkbookDataModel.
-' 5. Muestra un reporte detallado con auditoria paso a paso sin ocultar errores.
+' 1. Habilita el complemento COM Power Pivot si no estuviera conectado.
+' 2. Carga las 7 Tablas Oficiales (ListObjects) al Modelo VertiPaq con sintaxis
+'    nativa WORKSHEET (CommandText = [Libro]![Tabla]).
+' 3. Crea las relaciones 1:N en la Vista de Diagrama (Esquema Estrella).
+' 4. Registra las 10 medidas DAX oficiales de Casa&Estilo.
+' 5. Genera la Tabla Dinamica OLAP nativa en B5 con medidas en valores.
+' 6. Imprime la bitacora de ejecucion paso a paso en la celda B12 de la hoja.
 ' ==============================================================================
 
 Option Explicit
@@ -24,19 +26,28 @@ Public Sub ConstruirModeloPowerPivotPIA()
     Dim numTablas As Integer
     Dim numRel As Integer
     Dim numDAX As Integer
-    Dim i As Integer
+    Dim ai As COMAddIn
 
     Set wb = ActiveWorkbook
     logMensaje = ""
 
     ' --------------------------------------------------------------------------
-    ' PASO 0: VERIFICAR QUE EL ARCHIVO ESTE GUARDADO
+    ' PASO 0: VERIFICACIONES PREVIAS Y ACTIVACION DE POWER PIVOT COM
     ' --------------------------------------------------------------------------
     If wb.Path = "" Then
         MsgBox "Por favor guarda primero el archivo de Excel (.xlsx o .xlsm) en tu disco local antes de ejecutar la macro.", _
                vbExclamation, "Equipo 8 - Guardar Requerido"
         Exit Sub
     End If
+
+    On Error Resume Next
+    For Each ai In Application.COMAddIns
+        If ai.Description Like "*Power Pivot*" Or InStr(1, ai.progID, "AnalysisServices", vbTextCompare) > 0 Then
+            ai.Connect = True
+            Exit For
+        End If
+    Next ai
+    On Error GoTo 0
 
     Application.ScreenUpdating = False
     Application.DisplayAlerts = False
@@ -121,7 +132,9 @@ Public Sub ConstruirModeloPowerPivotPIA()
     End With
 
     ' Construir Tabla Dinamica OLAP desde el Data Model
-    ConstruirTablaDinamicaModelo wb, wsDash, logMensaje
+    If numTablas > 0 Then
+        ConstruirTablaDinamicaModelo wb, wsDash, logMensaje
+    End If
 
     ' Reporte de Auditoria y Estado del Modelo en la Hoja
     With wsDash.Range("J5:N5")
@@ -146,6 +159,29 @@ Public Sub ConstruirModeloPowerPivotPIA()
     wsDash.Range("J6:J10").Font.Bold = True
     wsDash.Range("J5:N10").Borders.LineStyle = xlContinuous
 
+    ' Imprimir Bitacora de Auditoria en la Hoja para Transparencia Total
+    wsDash.Range("B12:H12").Merge
+    wsDash.Range("B12").Value = "BITACORA TECNICA DE EJECUCION (AUDITORIA PASO A PASO):"
+    wsDash.Range("B12").Font.Bold = True
+    wsDash.Range("B12").Font.Color = RGB(26, 54, 93)
+
+    Dim lineasLog() As String
+    lineasLog = Split(logMensaje, vbCrLf)
+    Dim k As Long
+    For k = 0 To UBound(lineasLog)
+        If Trim(lineasLog(k)) <> "" Then
+            wsDash.Range("B" & (13 + k) & ":H" & (13 + k)).Merge
+            wsDash.Range("B" & (13 + k)).Value = lineasLog(k)
+            wsDash.Range("B" & (13 + k)).Font.Size = 9
+            If InStr(1, lineasLog(k), "OK", vbTextCompare) > 0 Then
+                wsDash.Range("B" & (13 + k)).Font.Color = RGB(47, 133, 90)
+            ElseIf InStr(1, lineasLog(k), "ERROR", vbTextCompare) > 0 Or InStr(1, lineasLog(k), "FALLO", vbTextCompare) > 0 Then
+                wsDash.Range("B" & (13 + k)).Font.Color = RGB(197, 48, 48)
+                wsDash.Range("B" & (13 + k)).Font.Bold = True
+            End If
+        End If
+    Next k
+
     wsDash.Columns("B:N").AutoFit
 
     Application.ScreenUpdating = True
@@ -154,16 +190,27 @@ Public Sub ConstruirModeloPowerPivotPIA()
     ' --------------------------------------------------------------------------
     ' PASO 5: MENSAJE FINAL AL USUARIO CON DIAGNOSTICO COMPLETO
     ' --------------------------------------------------------------------------
-    MsgBox "CONFIGURACION DE POWER PIVOT FINALIZADA" & vbCrLf & vbCrLf & _
-           "- Tablas en Data Model: " & numTablas & " / 7" & vbCrLf & _
-           "- Relaciones 1:N: " & numRel & " / 6" & vbCrLf & _
-           "- Medidas DAX: " & numDAX & " / 10" & vbCrLf & vbCrLf & _
-           "COMO VER EL DIAGRAMA:" & vbCrLf & _
-           "1. Haz clic en la pestana 'Power Pivot' de Excel." & vbCrLf & _
-           "2. Clic en 'Administrar'." & vbCrLf & _
-           "3. Clic en el boton 'Vista de diagrama' (Diagram View)." & vbCrLf & _
-           "Ahi veras las tablas como tarjetas unidas con lineas de relacion.", _
-           vbInformation, "Equipo 8 - Casa&Estilo Power Pivot"
+    If numTablas > 0 Then
+        MsgBox "CONFIGURACION DE POWER PIVOT FINALIZADA" & vbCrLf & vbCrLf & _
+               "- Tablas en Data Model: " & numTablas & " / 7" & vbCrLf & _
+               "- Relaciones 1:N: " & numRel & " / 6" & vbCrLf & _
+               "- Medidas DAX: " & numDAX & " / 10" & vbCrLf & vbCrLf & _
+               "COMO VER EL DIAGRAMA:" & vbCrLf & _
+               "1. Haz clic en la pestana 'Power Pivot' de Excel." & vbCrLf & _
+               "2. Clic en 'Administrar'." & vbCrLf & _
+               "3. Clic en el boton 'Vista de diagrama' (Diagram View)." & vbCrLf & _
+               "Ahi veras las tablas como tarjetas unidas con lineas de relacion.", _
+               vbInformation, "Equipo 8 - Casa&Estilo Power Pivot"
+    Else
+        MsgBox "AVISO: Las tablas no pudieron agregarse automaticamente mediante macro." & vbCrLf & _
+               "Revisa la bitacora en la fila 12 de esta hoja para ver el detalle." & vbCrLf & vbCrLf & _
+               "METODO MANUAL INMEDIATO (2 MINUTOS):" & vbCrLf & _
+               "1. Ve a la hoja FACT_VENTAS_MODELO y haz clic dentro de la tabla." & vbCrLf & _
+               "2. En la pestana Power Pivot, haz clic en 'Agregar a modelo de datos'." & vbCrLf & _
+               "3. Repite en DIM_PRODUCTO, DIM_SUCURSAL, DIM_CANAL y DIM_TIEMPO." & vbCrLf & _
+               "4. En Power Pivot pulsa 'Vista de diagrama' para arrastrar las relaciones.", _
+               vbExclamation, "Equipo 8 - Modo Manual Recomendado"
+    End If
 End Sub
 
 ' ==============================================================================
@@ -177,7 +224,9 @@ Private Sub CargarTablaAlModelo(wb As Workbook, tblName As String, sheetName As 
     Dim cmdText As String
     Dim mt As ModelTable
     Dim yaEnModelo As Boolean
+    Dim c As WorkbookConnection
     
+    ' 1. Verificar si ya existe en wb.Model
     yaEnModelo = False
     On Error Resume Next
     Set mt = wb.Model.ModelTables(tblName)
@@ -186,32 +235,41 @@ Private Sub CargarTablaAlModelo(wb As Workbook, tblName As String, sheetName As 
     
     If yaEnModelo Then
         contador = contador + 1
-        logMensaje = logMensaje & "OK: " & tblName & " ya en modelo." & vbCrLf
+        logMensaje = logMensaje & "OK: '" & tblName & "' ya se encuentra en el Modelo de Datos." & vbCrLf
         Exit Sub
     End If
     
+    ' 2. Verificar existencia de la hoja y la tabla
     On Error Resume Next
     Set ws = wb.Worksheets(sheetName)
     If ws Is Nothing Then
-        logMensaje = logMensaje & "ERROR: No existe hoja " & sheetName & vbCrLf
+        logMensaje = logMensaje & "ERROR: No existe la hoja '" & sheetName & "'." & vbCrLf
         Exit Sub
     End If
     Set tbl = ws.ListObjects(tblName)
     If tbl Is Nothing Then
-        logMensaje = logMensaje & "ERROR: No existe tabla " & tblName & vbCrLf
+        logMensaje = logMensaje & "ERROR: No existe la tabla '" & tblName & "' en hoja '" & sheetName & "'." & vbCrLf
         Exit Sub
     End If
     On Error GoTo 0
     
-    ' Metodo 1: Conexion WORKSHEET nativa (estandar de Excel)
+    ' 3. Limpiar conexion previa con nombre duplicado si existiera
     connName = "WorksheetConnection_" & wb.Name & "!" & tblName
     connStr = "WORKSHEET;" & wb.FullName
-    cmdText = sheetName & "!" & tblName
     
     On Error Resume Next
-    wb.Connections(connName).Delete
+    For Each c In wb.Connections
+        If c.Name = connName Or c.Name = ("Query - " & tblName) Then
+            c.Delete
+            Exit For
+        End If
+    Next c
     Err.Clear
+    On Error GoTo 0
     
+    ' Metodo 1A: Sintaxis oficial Excel [Libro]![Tabla] con xlCmdTable (7)
+    cmdText = wb.Name & "!" & tblName
+    On Error Resume Next
     wb.Connections.Add2 _
         Name:=connName, _
         Description:="Data Model para " & tblName, _
@@ -223,29 +281,70 @@ Private Sub CargarTablaAlModelo(wb As Workbook, tblName As String, sheetName As 
         
     If Err.Number = 0 Then
         contador = contador + 1
-        logMensaje = logMensaje & "OK: " & tblName & " cargada via WORKSHEET." & vbCrLf
+        logMensaje = logMensaje & "OK: '" & tblName & "' cargada exitosamente via WORKSHEET [Libro]![Tabla]." & vbCrLf
+        Exit Sub
+    End If
+    
+    ' Metodo 1B: Sintaxis solo [Tabla]
+    Err.Clear
+    cmdText = tblName
+    wb.Connections.Add2 _
+        Name:=connName, _
+        Description:="Data Model para " & tblName, _
+        ConnectionString:=connStr, _
+        CommandText:=cmdText, _
+        lCmdtype:=7, _
+        CreateModelConnection:=True, _
+        ImportRelationships:=False
+        
+    If Err.Number = 0 Then
+        contador = contador + 1
+        logMensaje = logMensaje & "OK: '" & tblName & "' cargada exitosamente via WORKSHEET [Tabla]." & vbCrLf
+        Exit Sub
+    End If
+
+    ' Metodo 1C: Sintaxis [Hoja]![Tabla]
+    Err.Clear
+    cmdText = sheetName & "!" & tblName
+    wb.Connections.Add2 _
+        Name:=connName, _
+        Description:="Data Model para " & tblName, _
+        ConnectionString:=connStr, _
+        CommandText:=cmdText, _
+        lCmdtype:=7, _
+        CreateModelConnection:=True, _
+        ImportRelationships:=False
+        
+    If Err.Number = 0 Then
+        contador = contador + 1
+        logMensaje = logMensaje & "OK: '" & tblName & "' cargada via WORKSHEET [Hoja]![Tabla]." & vbCrLf
+        Exit Sub
+    End If
+
+    ' Metodo 2: Fallback via Power Query M
+    Dim errDesc As String
+    errDesc = Err.Description
+    Err.Clear
+    Dim mCode As String
+    mCode = "let Source = Excel.CurrentWorkbook(){[Name=""" & tblName & """]}[Content] in Source"
+    On Error Resume Next
+    wb.Queries(tblName).Delete
+    Err.Clear
+    wb.Queries.Add tblName, mCode
+    wb.Connections.Add2 _
+        Name:="Query - " & tblName, _
+        Description:="PQ Data Model " & tblName, _
+        ConnectionString:="OLEDB;Provider=Microsoft.Mashup.OleDb.1;Data Source=$;Location=" & tblName, _
+        CommandText:=tblName, _
+        lCmdtype:=6, _
+        CreateModelConnection:=True, _
+        ImportRelationships:=False
+        
+    If Err.Number = 0 Then
+        contador = contador + 1
+        logMensaje = logMensaje & "OK: '" & tblName & "' cargada via Power Query M." & vbCrLf
     Else
-        ' Metodo 2: Fallback via Power Query M
-        Err.Clear
-        Dim mCode As String
-        mCode = "let Source = Excel.CurrentWorkbook(){[Name=""" & tblName & """]}[Content] in Source"
-        wb.Queries(tblName).Delete
-        Err.Clear
-        wb.Queries.Add tblName, mCode
-        wb.Connections.Add2 _
-            Name:="Query - " & tblName, _
-            Description:="PQ Data Model " & tblName, _
-            ConnectionString:="OLEDB;Provider=Microsoft.Mashup.OleDb.1;Data Source=$;Location=" & tblName, _
-            CommandText:=tblName, _
-            lCmdtype:=6, _
-            CreateModelConnection:=True, _
-            ImportRelationships:=False
-        If Err.Number = 0 Then
-            contador = contador + 1
-            logMensaje = logMensaje & "OK: " & tblName & " cargada via Power Query." & vbCrLf
-        Else
-            logMensaje = logMensaje & "FALLO " & tblName & ": " & Err.Description & vbCrLf
-        End If
+        logMensaje = logMensaje & "FALLO '" & tblName & "': " & errDesc & " (PQ: " & Err.Description & ")" & vbCrLf
     End If
     On Error GoTo 0
 End Sub
