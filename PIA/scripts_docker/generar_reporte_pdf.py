@@ -12,7 +12,7 @@
 # 1. Integrar portada institucional FIME, metadatos y resumen ejecutivo.
 # 2. Documentar la auditoría de calidad, el diagrama ER, el esquema estrella y DDL.
 # 3. Presentar las tablas de balance de masa contable (100% conciliado).
-# 4. Incluir el catálogo de 10 medidas DAX y las 5 recomendaciones para el C-Level.
+# 4. Incluir el catálogo de 21 medidas DAX y las 5 recomendaciones para el C-Level.
 # ==============================================================================
 
 import os
@@ -208,11 +208,9 @@ def generate_pdf():
         "A partir de un ecosistema de datos crudos (RAW) compuesto por 11 archivos transaccionales y más de medio millón de registros, "
         "el Equipo 8 diseñó un pipeline de ingeniería de datos en MySQL 8.0 estructurado en tres capas (RAW &rarr; Staging &rarr; Data Mart Dimensional), "
         "garantizando la trazabilidad absoluta de balance de masa contable, un modelo relacional en esquema estrella con granularidad a nivel línea de ticket, "
-        "un catálogo exhaustivo de 10 medidas DAX en Power Pivot y un tablero ejecutivo orientado a la toma de decisiones estratégicas.",
+        "un catálogo exhaustivo de 21 medidas DAX en Power Pivot y un tablero ejecutivo orientado a la toma de decisiones estratégicas.",
         body_style
     ))
-
-    # Cifras Clave del Negocio
     story.append(Spacer(1, 5))
     story.append(Paragraph("Cifras Oficiales de Control Financiero y Operacional (2024 - 2026):", h2_style))
 
@@ -220,7 +218,7 @@ def generate_pdf():
         [Paragraph("Ventas Netas Globales", table_hdr), Paragraph("Utilidad Bruta", table_hdr), Paragraph("Margen Bruto %", table_hdr), Paragraph("Ticket Promedio", table_hdr)],
         [Paragraph("<b>$1,310,746,491.89 MXN</b>", table_cell_bold), Paragraph("<b>$280,874,853.71 MXN</b>", table_cell_bold), Paragraph("<b>21.43%</b>", table_cell_bold), Paragraph("<b>$9,362.47 MXN</b>", table_cell_bold)],
         [Paragraph("Cumplimiento SLA Instalaciones", table_hdr), Paragraph("Devoluciones Procesadas", table_hdr), Paragraph("Reembolsos Totales", table_hdr), Paragraph("Ítems en Rotura de Stock", table_hdr)],
-        [Paragraph("<font color='#C53030'><b>34.77% (Alerta Crítica)</b></font>", table_cell_bold), Paragraph("<b>9,952 eventos</b>", table_cell), Paragraph("<font color='#C53030'><b>$22,897,836.87 MXN</b></font>", table_cell), Paragraph("<font color='#C53030'><b>126 productos (0 stock)</b></font>", table_cell)]
+        [Paragraph("<font color='#C53030'><b>36.91% (Alerta Crítica)</b></font>", table_cell_bold), Paragraph("<b>9,952 eventos</b>", table_cell), Paragraph("<font color='#C53030'><b>$22,897,836.87 MXN</b></font>", table_cell), Paragraph("<font color='#C53030'><b>126 productos (0 stock)</b></font>", table_cell)]
     ]
     t_score = Table(score_data, colWidths=[126, 126, 126, 126])
     t_score.setStyle(TableStyle([
@@ -347,23 +345,34 @@ def generate_pdf():
     story.append(HRFlowable(width="100%", thickness=1, color=C_GOLD, spaceAfter=10, spaceBefore=2))
 
     story.append(Paragraph(
-        "Se diseñó un modelo de cálculo analítico formal en Power Pivot integrando 10 medidas DAX que cubren los tres niveles de decisión empresarial: "
-        "Estratégico (Dirección General), Táctico (Gerencias Comerciales) y Operacional (Logística, Tiendas e Inventario):",
+        "Se diseñó un modelo de cálculo analítico formal en Power Pivot integrando 21 medidas DAX que cubren los 5 pilares empresariales "
+        "(Financiero, Comercial/Clientes, Calidad, Logística e Inventarios) en los tres niveles de decisión:",
         body_style
     ))
 
     dax_data = [
         [Paragraph("ID", table_hdr), Paragraph("Medida DAX", table_hdr), Paragraph("Nivel", table_hdr), Paragraph("Formulación DAX", table_hdr), Paragraph("Formato", table_hdr), Paragraph("Valor Oficial", table_hdr)],
-        [Paragraph("M01", table_cell_bold), Paragraph("Ventas Brutas", table_cell_bold), Paragraph("Estratégico", table_cell), Paragraph("<code>SUM(FactVentas[monto_bruto])</code>", code_style), Paragraph("$#,##0.00", table_cell), Paragraph("$1,402,502,128.39", table_cell)],
-        [Paragraph("M02", table_cell_bold), Paragraph("Descuentos Otorgados", table_cell_bold), Paragraph("Táctico", table_cell), Paragraph("<code>SUM(FactVentas[monto_descuento])</code>", code_style), Paragraph("$#,##0.00", table_cell), Paragraph("$91,755,708.99", table_cell)],
-        [Paragraph("M03", table_cell_bold), Paragraph("Ventas Netas", table_cell_bold), Paragraph("Estratégico", table_cell), Paragraph("<code>[Ventas Brutas] - [Descuentos Otorgados]</code>", code_style), Paragraph("$#,##0.00", table_cell), Paragraph("<b>$1,310,746,491.89</b>", table_cell_bold)],
-        [Paragraph("M04", table_cell_bold), Paragraph("Costo de Ventas (COGS)", table_cell_bold), Paragraph("Estratégico", table_cell), Paragraph("<code>SUM(FactVentas[costo_total])</code>", code_style), Paragraph("$#,##0.00", table_cell), Paragraph("$1,029,871,626.89", table_cell)],
-        [Paragraph("M05", table_cell_bold), Paragraph("Utilidad Bruta", table_cell_bold), Paragraph("Estratégico", table_cell), Paragraph("<code>[Ventas Netas] - [Costo de Ventas]</code>", code_style), Paragraph("$#,##0.00", table_cell), Paragraph("<b>$280,874,853.71</b>", table_cell_bold)],
+        [Paragraph("M01", table_cell_bold), Paragraph("Ventas Brutas", table_cell_bold), Paragraph("Estratégico", table_cell), Paragraph("<code>SUM(TablaFactVentas[monto_bruto])</code>", code_style), Paragraph("$#,##0.00", table_cell), Paragraph("$1,402,502,128.39", table_cell)],
+        [Paragraph("M02", table_cell_bold), Paragraph("Descuentos Totales", table_cell_bold), Paragraph("Táctico", table_cell), Paragraph("<code>SUM(TablaFactVentas[monto_descuento])</code>", code_style), Paragraph("$#,##0.00", table_cell), Paragraph("$91,755,708.99", table_cell)],
+        [Paragraph("M03", table_cell_bold), Paragraph("Ventas Netas", table_cell_bold), Paragraph("Estratégico", table_cell), Paragraph("<code>[Ventas Brutas] - [Descuentos Totales]</code>", code_style), Paragraph("$#,##0.00", table_cell), Paragraph("<b>$1,310,746,491.89</b>", table_cell_bold)],
+        [Paragraph("M04", table_cell_bold), Paragraph("Costo de Ventas (COGS)", table_cell_bold), Paragraph("Estratégico", table_cell), Paragraph("<code>SUM(TablaFactVentas[costo_total])</code>", code_style), Paragraph("$#,##0.00", table_cell), Paragraph("$1,029,871,626.89", table_cell)],
+        [Paragraph("M05", table_cell_bold), Paragraph("Utilidad Bruta", table_cell_bold), Paragraph("Estratégico", table_cell), Paragraph("<code>[Ventas Netas] - [Costo de Ventas (COGS)]</code>", code_style), Paragraph("$#,##0.00", table_cell), Paragraph("<b>$280,874,853.71</b>", table_cell_bold)],
         [Paragraph("M06", table_cell_bold), Paragraph("Margen Bruto %", table_cell_bold), Paragraph("Estratégico", table_cell), Paragraph("<code>DIVIDE([Utilidad Bruta], [Ventas Netas], 0)</code>", code_style), Paragraph("0.00%", table_cell), Paragraph("<b>21.43%</b>", table_cell_bold)],
-        [Paragraph("M07", table_cell_bold), Paragraph("Ticket Promedio", table_cell_bold), Paragraph("Táctico", table_cell), Paragraph("<code>DIVIDE([Ventas Netas], DISTINCTCOUNT(FactVentas[venta_id]), 0)</code>", code_style), Paragraph("$#,##0.00", table_cell), Paragraph("$9,362.47", table_cell)],
-        [Paragraph("M08", table_cell_bold), Paragraph("Tasa Devolución %", table_cell_bold), Paragraph("Operacional", table_cell), Paragraph("<code>DIVIDE(SUM(FactDevoluciones[importe_devuelto]), [Ventas Brutas], 0)</code>", code_style), Paragraph("0.00%", table_cell), Paragraph("1.63% ($22.9M)", table_cell)],
-        [Paragraph("M09", table_cell_bold), Paragraph("Cumplimiento SLA %", table_cell_bold), Paragraph("Operacional", table_cell), Paragraph("<code>DIVIDE(CALCULATE(COUNTROWS(FactInst), FactInst[cumplio_sla]=1), COUNTROWS(FactInst), 0)</code>", code_style), Paragraph("0.00%", table_cell), Paragraph("<font color='#C53030'><b>34.77% (Crítico)</b></font>", table_cell)],
-        [Paragraph("M10", table_cell_bold), Paragraph("Crecimiento YoY %", table_cell_bold), Paragraph("Estratégico", table_cell), Paragraph("<code>DIVIDE([Ventas Netas] - [Ventas Netas LY], [Ventas Netas LY], 0)</code>", code_style), Paragraph("+0.00%", table_cell), Paragraph("+0.85% (2025)", table_cell)]
+        [Paragraph("M07", table_cell_bold), Paragraph("Tasa Descuento %", table_cell_bold), Paragraph("Táctico", table_cell), Paragraph("<code>DIVIDE([Descuentos Totales], [Ventas Brutas], 0)</code>", code_style), Paragraph("0.00%", table_cell), Paragraph("6.54%", table_cell)],
+        [Paragraph("M08", table_cell_bold), Paragraph("Crecimiento YoY %", table_cell_bold), Paragraph("Estratégico", table_cell), Paragraph("<code>DIVIDE([Ventas Netas]-[Ventas Netas LY], [Ventas Netas LY], 0)</code>", code_style), Paragraph("+0.00%", table_cell), Paragraph("+0.86% (2025)", table_cell)],
+        [Paragraph("M09", table_cell_bold), Paragraph("Total Tickets", table_cell_bold), Paragraph("Táctico", table_cell), Paragraph("<code>DISTINCTCOUNT(TablaFactVentas[venta_id])</code>", code_style), Paragraph("#,##0", table_cell), Paragraph("140,000", table_cell)],
+        [Paragraph("M10", table_cell_bold), Paragraph("Unidades Vendidas", table_cell_bold), Paragraph("Táctico", table_cell), Paragraph("<code>SUM(TablaFactVentas[cantidad])</code>", code_style), Paragraph("#,##0", table_cell), Paragraph("831,382", table_cell)],
+        [Paragraph("M11", table_cell_bold), Paragraph("Ticket Promedio", table_cell_bold), Paragraph("Táctico", table_cell), Paragraph("<code>DIVIDE([Ventas Netas], [Total Tickets], 0)</code>", code_style), Paragraph("$#,##0.00", table_cell), Paragraph("$9,362.47", table_cell)],
+        [Paragraph("M12", table_cell_bold), Paragraph("Unidades / Ticket (UPT)", table_cell_bold), Paragraph("Táctico", table_cell), Paragraph("<code>DIVIDE([Unidades Vendidas], [Total Tickets], 0)</code>", code_style), Paragraph("0.00", table_cell), Paragraph("5.94", table_cell)],
+        [Paragraph("M13", table_cell_bold), Paragraph("Venta por m2", table_cell_bold), Paragraph("Táctico", table_cell), Paragraph("<code>DIVIDE([Ventas Netas], SUM(TablaDimSucursal[m2]), 0)</code>", code_style), Paragraph("$#,##0.00", table_cell), Paragraph("$58,226.93/m2", table_cell)],
+        [Paragraph("M14", table_cell_bold), Paragraph("Clientes Activos", table_cell_bold), Paragraph("Táctico", table_cell), Paragraph("<code>DISTINCTCOUNT(TablaFactVentas[cliente_key])</code>", code_style), Paragraph("#,##0", table_cell), Paragraph("10,800", table_cell)],
+        [Paragraph("M15", table_cell_bold), Paragraph("Monto Devuelto", table_cell_bold), Paragraph("Operacional", table_cell), Paragraph("<code>SUM(TablaFactDevoluciones[importe_devuelto])</code>", code_style), Paragraph("$#,##0.00", table_cell), Paragraph("$22,897,836.87", table_cell)],
+        [Paragraph("M16", table_cell_bold), Paragraph("Tasa Devolución %", table_cell_bold), Paragraph("Operacional", table_cell), Paragraph("<code>DIVIDE([Monto Devuelto], [Ventas Brutas], 0)</code>", code_style), Paragraph("0.00%", table_cell), Paragraph("1.63%", table_cell)],
+        [Paragraph("M17", table_cell_bold), Paragraph("Cumplimiento SLA %", table_cell_bold), Paragraph("Operacional", table_cell), Paragraph("<code>DIVIDE(CALCULATE(COUNTROWS(TablaFactInst), [cumplio_sla]=1), COUNTROWS(TablaFactInst), 0)</code>", code_style), Paragraph("0.00%", table_cell), Paragraph("<font color='#C53030'><b>36.91% (Crítico)</b></font>", table_cell)],
+        [Paragraph("M18", table_cell_bold), Paragraph("Días Prom. Retraso", table_cell_bold), Paragraph("Operacional", table_cell), Paragraph("<code>AVERAGE(TablaFactInstalaciones[dias_desviacion])</code>", code_style), Paragraph("+0.00", table_cell), Paragraph("+3.41 días", table_cell)],
+        [Paragraph("M19", table_cell_bold), Paragraph("Satisfacción CSAT", table_cell_bold), Paragraph("Operacional", table_cell), Paragraph("<code>AVERAGE(TablaFactInstalaciones[satisfaccion])</code>", code_style), Paragraph("0.00", table_cell), Paragraph("2.99 / 5.0", table_cell)],
+        [Paragraph("M20", table_cell_bold), Paragraph("Valor Inventario Costo", table_cell_bold), Paragraph("Operacional", table_cell), Paragraph("<code>SUM(TablaFactInventario[valor_inventario_costo])</code>", code_style), Paragraph("$#,##0.00", table_cell), Paragraph("$2,373,716,477.50", table_cell)],
+        [Paragraph("M21", table_cell_bold), Paragraph("SKUs en Rotura Stock", table_cell_bold), Paragraph("Operacional", table_cell), Paragraph("<code>CALCULATE(COUNTROWS(TablaFactInv), [estatus_stock]=\"Rotura Stock\")</code>", code_style), Paragraph("#,##0", table_cell), Paragraph("126 (2,738 u.)", table_cell)],
     ]
     t_dax = Table(dax_data, colWidths=[25, 95, 60, 164, 55, 105])
     t_dax.setStyle(TableStyle([
@@ -384,7 +393,7 @@ def generate_pdf():
 
     recs_pdf = [
         ("1. Reestructuración Inmediata de la Logística de Instalaciones (Prioridad Máxima):",
-         "El cumplimiento de SLA del 34.77% y el retraso promedio de +3.8 días destruyen la lealtad del cliente (satisfacción 2.98/5.0). "
+         "El cumplimiento de SLA del 36.91% (2,399 de 6,500) y el retraso promedio de +3.41 días destruyen la lealtad del cliente (satisfacción global 2.99/5.0; Apodaca 2 cae a 2.86). "
          "Se recomienda licitar cuadrillas dedicadas por zona geográfica e implementar ruteo dinámico con penalizaciones por retraso. Meta: 85% SLA en 90 días."),
         ("2. Protocolo de Inspección en Muelle y Embalaje Reforzado:",
          "Daños y defectos de fabricación generan el 39% de las devoluciones ($8.9M MXN). Es imperativo implementar una política de rechazo en muelle "

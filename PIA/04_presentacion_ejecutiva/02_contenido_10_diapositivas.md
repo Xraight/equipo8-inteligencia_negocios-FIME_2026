@@ -115,8 +115,8 @@
 - **Título:** Logística de Instalaciones: Cuello de Botella Crítico
 - **Puntos Clave:**
   - **Universo Auditado:** 6,500 órdenes de instalación técnica especializada en domicilios.
-  - **Cumplimiento Global de SLA:** **34.77% a tiempo** (65.23% de las instalaciones sufren retraso).
-  - **Varianza Temporal:** Retraso promedio de **3.8 días adicionales** a la fecha prometida.
+  - **Cumplimiento Global de SLA:** **36.91% a tiempo** (2,399 de 6,500; 63.09% de las instalaciones sufren retraso).
+  - **Varianza Temporal:** Retraso promedio global de **+3.41 días adicionales** a la fecha prometida (CSAT global: 2.99 / 5.0).
   - **Sucursales Críticas:**
     - Monterrey 11: Cumplimiento SLA 29.66% | Retraso promedio 4.2 días | Satisfacción 3.05.
     - Santa Catarina 6: Cumplimiento SLA 34.18% | Retraso promedio 3.6 días | Satisfacción 2.94.
@@ -140,7 +140,7 @@
 ## Diapositiva 10: Conclusiones y Hoja de Ruta Prescriptiva
 - **Título:** Hoja de Ruta Estratégica para el C-Level (Top 5 Acciones)
 - **Cinco Recomendaciones Accionables:**
-  1. **Rediseño del SLA de Armado e Instalación:** Contratación de cuadrillas logísticas regionales y ruteo dinámico para elevar el cumplimiento del 34.7% al 85% en 90 días (Impacto: +1.5 pts CSAT).
+  1. **Rediseño del SLA de Armado e Instalación:** Contratación de cuadrillas logísticas regionales y ruteo dinámico para elevar el cumplimiento del 36.9% al 85% en 90 días (Impacto: +1.5 pts CSAT).
   2. **Certificación de Proveedores y Embalaje Reforzado:** Protocolo de inspección en muelle y penalizaciones a proveedores por defectos para abatir en 40% las devoluciones (Ahorro: ~$9.2M MXN anuales).
   3. **Planificación de Inventarios con Algoritmo Min/Max Dinámico:** Automatización de órdenes de compra vinculando el punto de reorden a la velocidad de venta semanal por tienda (Eliminación de 126 roturas).
   4. **Campaña de Adopción Digital en App Móvil:** Programa de lealtad omnicanal y visualizador 3D/AR en App para reducir devoluciones por "talla/expectativa" y duplicar la cuota de la App del 10% al 20%.

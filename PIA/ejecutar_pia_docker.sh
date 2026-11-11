@@ -81,92 +81,143 @@ echo -e "\n${COLOR_YELLOW}[6/7] Exportando datasets analíticos y generando entr
 mkdir -p PIA/03_dashboard_excel/datos_exportados
 
 python3 -c "
-import subprocess, csv
-def query_mysql(sql):
-    cmd = ['docker', 'exec', '-i', 'casa_estilo_mysql', 'mysql', '--default-character-set=utf8mb4', '-u', 'root', '-ppassword', 'ce_bi', '-B', '-N', '-e', sql]
-    res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, encoding='utf-8')
-    if res.returncode != 0: raise Exception(res.stderr)
-    return [l.split('\t') for l in res.stdout.strip().split('\n') if l]
+import os, subprocess, csv
 
 def export_csv(sql, headers, out_path):
-    lines = query_mysql(sql)
+    \"\"\"Ejecuta consulta MySQL en Docker y escribe un CSV UTF-8 validado.\"\"\"
+    cmd = ['docker', 'exec', '-i', 'casa_estilo_mysql', 'mysql', '--default-character-set=utf8mb4',
+           '-u', 'root', '-ppassword', 'ce_bi', '-B', '-N', '-e', sql]
+    res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, encoding='utf-8')
+    if res.returncode != 0:
+        raise RuntimeError(res.stderr)
+    rows = [line.split('\t') for line in res.stdout.rstrip('\n').split('\n') if line]
     with open(out_path, 'w', newline='', encoding='utf-8') as f:
         w = csv.writer(f)
         w.writerow(headers)
-        w.writerows(lines)
+        w.writerows(rows)
 
-export_csv('SELECT anio, mes, mes_nombre, mes_anio, transacciones, unidades_vendidas, venta_bruta, descuentos_otorgados, venta_neta, costo_ventas_cogs, utilidad_bruta, margen_bruto_pct, ticket_promedio FROM vw_kpi_resumen_mensual;',
-           ['anio', 'mes', 'mes_nombre', 'mes_anio', 'transacciones', 'unidades_vendidas', 'venta_bruta', 'descuentos_otorgados', 'venta_neta', 'costo_ventas_cogs', 'utilidad_bruta', 'margen_bruto_pct', 'ticket_promedio'],
-           'PIA/03_dashboard_excel/datos_exportados/kpi_resumen_mensual.csv')
+base_dir = 'PIA/03_dashboard_excel/datos_exportados'
+for stale in ('fact_ventas_modelo.csv', 'fact_devoluciones_muestra.csv'):
+    stale_path = os.path.join(base_dir, stale)
+    if os.path.exists(stale_path):
+        os.remove(stale_path)
 
-export_csv('SELECT categoria, skus_activos, unidades_vendidas, venta_bruta, venta_neta, costo_total, utilidad_bruta, margen_pct, unidades_devueltas, monto_devuelto, tasa_devolucion_pct FROM vw_kpi_desempeno_categorias;',
-           ['categoria', 'skus_activos', 'unidades_vendidas', 'venta_bruta', 'venta_neta', 'costo_total', 'utilidad_bruta', 'margen_pct', 'unidades_devueltas', 'monto_devuelto', 'tasa_devolucion_pct'],
-           'PIA/03_dashboard_excel/datos_exportados/kpi_categorias.csv')
+exports = [
+    # Vistas y agregados KPI ejecutivos (5 Pilares)
+    ('SELECT anio, mes, mes_nombre, mes_anio, transacciones, unidades_vendidas, venta_bruta, descuentos_otorgados, venta_neta, costo_ventas_cogs, utilidad_bruta, margen_bruto_pct, ticket_promedio FROM vw_kpi_resumen_mensual;',
+     ['anio', 'mes', 'mes_nombre', 'mes_anio', 'transacciones', 'unidades_vendidas', 'venta_bruta', 'descuentos_otorgados', 'venta_neta', 'costo_ventas_cogs', 'utilidad_bruta', 'margen_bruto_pct', 'ticket_promedio'],
+     'kpi_resumen_mensual.csv'),
+    ('''SELECT t.anio, COUNT(DISTINCT f.venta_id) AS transacciones, SUM(f.cantidad) AS unidades_vendidas,
+               ROUND(SUM(f.monto_bruto), 2) AS venta_bruta, ROUND(SUM(f.monto_descuento), 2) AS descuentos_otorgados,
+               ROUND(SUM(f.monto_neto), 2) AS venta_neta, ROUND(SUM(f.utilidad_bruta), 2) AS utilidad_bruta,
+               ROUND(100 * SUM(f.utilidad_bruta) / SUM(f.monto_neto), 2) AS margen_bruto_pct,
+               ROUND(SUM(f.monto_neto) / COUNT(DISTINCT f.venta_id), 2) AS ticket_promedio
+        FROM fact_ventas_detalle f INNER JOIN dim_tiempo t ON f.tiempo_id = t.tiempo_id
+        GROUP BY t.anio ORDER BY t.anio;''',
+     ['anio', 'transacciones', 'unidades_vendidas', 'venta_bruta', 'descuentos_otorgados', 'venta_neta', 'utilidad_bruta', 'margen_bruto_pct', 'ticket_promedio'],
+     'kpi_resumen_anual.csv'),
+    ('SELECT categoria, skus_activos, unidades_vendidas, venta_bruta, venta_neta, costo_total, utilidad_bruta, margen_pct, unidades_devueltas, monto_devuelto, tasa_devolucion_pct FROM vw_kpi_desempeno_categorias;',
+     ['categoria', 'skus_activos', 'unidades_vendidas', 'venta_bruta', 'venta_neta', 'costo_total', 'utilidad_bruta', 'margen_pct', 'unidades_devueltas', 'monto_devuelto', 'tasa_devolucion_pct'],
+     'kpi_categorias.csv'),
+    ('SELECT canal, transacciones, unidades_vendidas, venta_neta, ticket_promedio, utilidad_bruta, margen_pct FROM vw_kpi_omnicanalidad;',
+     ['canal', 'transacciones', 'unidades_vendidas', 'venta_neta', 'ticket_promedio', 'utilidad_bruta', 'margen_pct'],
+     'kpi_omnicanalidad.csv'),
+    ('SELECT sucursal_id, sucursal, ciudad, estado, m2, categoria_tamano, transacciones, venta_neta, venta_por_m2, utilidad_bruta, margen_pct FROM vw_kpi_sucursales;',
+     ['sucursal_id', 'sucursal', 'ciudad', 'estado', 'm2', 'categoria_tamano', 'transacciones', 'venta_neta', 'venta_por_m2', 'utilidad_bruta', 'margen_pct'],
+     'kpi_sucursales.csv'),
+    ('SELECT sucursal, total_servicios, servicios_a_tiempo, servicios_con_retraso, cumplimiento_sla_pct, dias_reales_promedio, dias_retraso_promedio, satisfaccion_promedio FROM vw_kpi_instalaciones_sla;',
+     ['sucursal', 'total_servicios', 'servicios_a_tiempo', 'servicios_con_retraso', 'cumplimiento_sla_pct', 'dias_reales_promedio', 'dias_retraso_promedio', 'satisfaccion_promedio'],
+     'kpi_instalaciones_sla.csv'),
+    ('SELECT motivo, COUNT(*) AS eventos, SUM(cantidad_devuelta) AS piezas, SUM(importe_devuelto) AS total_reembolsado FROM fact_devoluciones GROUP BY motivo ORDER BY total_reembolsado DESC;',
+     ['motivo', 'eventos', 'piezas', 'total_reembolsado'],
+     'kpi_devoluciones_motivos.csv'),
+    ('SELECT estatus_stock, COUNT(*) AS items, SUM(stock_actual) AS piezas_stock, SUM(deficit_unidades) AS deficit_piezas, SUM(valor_inventario_costo) AS valor_inventario FROM fact_inventario_snapshot GROUP BY estatus_stock;',
+     ['estatus_stock', 'items', 'piezas_stock', 'deficit_piezas', 'valor_inventario'],
+     'kpi_inventario_resumen.csv'),
+    ('''SELECT c.segmento, COUNT(DISTINCT c.cliente_key) AS clientes, COUNT(DISTINCT f.venta_id) AS tickets,
+               SUM(f.cantidad) AS unidades, ROUND(SUM(f.monto_bruto), 2) AS venta_bruta,
+               ROUND(SUM(f.monto_descuento), 2) AS descuentos_mxn, ROUND(SUM(f.monto_neto), 2) AS venta_neta,
+               ROUND(SUM(f.utilidad_bruta), 2) AS utilidad_bruta, ROUND(100 * SUM(f.utilidad_bruta) / SUM(f.monto_neto), 2) AS margen_pct
+        FROM fact_ventas_detalle f INNER JOIN dim_cliente c ON f.cliente_key = c.cliente_key
+        GROUP BY c.segmento ORDER BY venta_neta DESC;''',
+     ['segmento', 'clientes', 'tickets', 'unidades', 'venta_bruta', 'descuentos_mxn', 'venta_neta', 'utilidad_bruta', 'margen_pct'],
+     'kpi_clientes_segmentos.csv'),
+    ('''SELECT m.metodo_pago_id, m.metodo_nombre, COUNT(DISTINCT f.venta_id) AS tickets,
+               SUM(f.cantidad) AS unidades, ROUND(SUM(f.monto_neto), 2) AS venta_neta,
+               ROUND(SUM(f.monto_neto) / COUNT(DISTINCT f.venta_id), 2) AS ticket_promedio,
+               ROUND(SUM(f.utilidad_bruta), 2) AS utilidad_bruta
+        FROM fact_ventas_detalle f INNER JOIN dim_metodo_pago m ON f.metodo_pago_id = m.metodo_pago_id
+        GROUP BY m.metodo_pago_id, m.metodo_nombre ORDER BY venta_neta DESC;''',
+     ['metodo_pago_id', 'metodo_nombre', 'tickets', 'unidades', 'venta_neta', 'ticket_promedio', 'utilidad_bruta'],
+     'kpi_metodos_pago.csv'),
+    ('''SELECT p.categoria, COUNT(*) AS skus_sucursal, COUNT(DISTINCT inv.producto_key) AS skus,
+               SUM(inv.stock_actual) AS stock_actual, SUM(inv.punto_reorden) AS punto_reorden,
+               SUM(inv.deficit_unidades) AS deficit_unidades,
+               SUM(inv.estatus_stock = 'Rotura Stock') AS roturas,
+               SUM(inv.estatus_stock = 'Alerta Reorden') AS alertas,
+               ROUND(SUM(inv.valor_inventario_costo), 2) AS valor_costo
+        FROM fact_inventario_snapshot inv INNER JOIN dim_producto p ON inv.producto_key = p.producto_key
+        GROUP BY p.categoria ORDER BY valor_costo DESC;''',
+     ['categoria', 'skus_sucursal', 'skus', 'stock_actual', 'punto_reorden', 'deficit_unidades', 'roturas', 'alertas', 'valor_costo'],
+     'kpi_inventario_categorias.csv'),
+    ('''SELECT p.categoria, SUM(f.cantidad) AS unidades, ROUND(SUM(f.monto_bruto), 2) AS venta_bruta,
+               ROUND(SUM(f.monto_descuento), 2) AS descuentos_mxn,
+               ROUND(100 * SUM(f.monto_descuento) / SUM(f.monto_bruto), 2) AS tasa_descuento_pct,
+               ROUND(SUM(f.monto_neto), 2) AS venta_neta, ROUND(SUM(f.utilidad_bruta), 2) AS utilidad_bruta,
+               ROUND(100 * SUM(f.utilidad_bruta) / SUM(f.monto_neto), 2) AS margen_pct
+        FROM fact_ventas_detalle f INNER JOIN dim_producto p ON f.producto_key = p.producto_key
+        GROUP BY p.categoria ORDER BY venta_neta DESC;''',
+     ['categoria', 'unidades', 'venta_bruta', 'descuentos_mxn', 'tasa_descuento_pct', 'venta_neta', 'utilidad_bruta', 'margen_pct'],
+     'kpi_descuentos_categorias.csv'),
+    ('''SELECT p.producto_id, p.sku, p.producto, p.categoria, p.marca, p.requiere_instalacion,
+               COUNT(DISTINCT f.venta_id) AS tickets, SUM(f.cantidad) AS unidades,
+               ROUND(SUM(f.monto_neto), 2) AS venta_neta, ROUND(SUM(f.utilidad_bruta), 2) AS utilidad_bruta,
+               ROUND(100 * SUM(f.utilidad_bruta) / SUM(f.monto_neto), 2) AS margen_pct
+        FROM fact_ventas_detalle f INNER JOIN dim_producto p ON f.producto_key = p.producto_key
+        GROUP BY p.producto_key, p.producto_id, p.sku, p.producto, p.categoria, p.marca, p.requiere_instalacion
+        ORDER BY venta_neta DESC LIMIT 15;''',
+     ['producto_id', 'sku', 'producto', 'categoria', 'marca', 'requiere_instalacion', 'tickets', 'unidades', 'venta_neta', 'utilidad_bruta', 'margen_pct'],
+     'kpi_productos_top.csv'),
 
-export_csv('SELECT canal, transacciones, unidades_vendidas, venta_neta, ticket_promedio, utilidad_bruta, margen_pct FROM vw_kpi_omnicanalidad;',
-           ['canal', 'transacciones', 'unidades_vendidas', 'venta_neta', 'ticket_promedio', 'utilidad_bruta', 'margen_pct'],
-           'PIA/03_dashboard_excel/datos_exportados/kpi_omnicanalidad.csv')
+    # Dimensiones conformes completas (Esquema Estrella Kimball)
+    ('SELECT tiempo_id, fecha, anio, trimestre, trimestre_nombre, mes, mes_nombre, mes_anio, semana_anio, dia_mes, dia_semana, dia_semana_nombre, es_fin_semana FROM dim_tiempo;',
+     ['tiempo_id', 'fecha', 'anio', 'trimestre', 'trimestre_nombre', 'mes', 'mes_nombre', 'mes_anio', 'semana_anio', 'dia_mes', 'dia_semana', 'dia_semana_nombre', 'es_fin_semana'],
+     'dim_tiempo.csv'),
+    ('SELECT producto_key, producto_id, sku, producto, categoria, marca, costo, precio_lista, margen_teorico_pct, activo, requiere_instalacion FROM dim_producto;',
+     ['producto_key', 'producto_id', 'sku', 'producto', 'categoria', 'marca', 'costo', 'precio_lista', 'margen_teorico_pct', 'activo', 'requiere_instalacion'],
+     'dim_producto.csv'),
+    ('SELECT sucursal_key, sucursal_id, sucursal, ciudad, estado, m2, categoria_tamano, fecha_apertura FROM dim_sucursal;',
+     ['sucursal_key', 'sucursal_id', 'sucursal', 'ciudad', 'estado', 'm2', 'categoria_tamano', 'fecha_apertura'],
+     'dim_sucursal.csv'),
+    ('SELECT canal_id, canal_nombre FROM dim_canal;',
+     ['canal_id', 'canal_nombre'],
+     'dim_canal.csv'),
+    ('SELECT cliente_key, cliente_id, nombre, sexo, fecha_alta, ciudad, segmento, email FROM dim_cliente;',
+     ['cliente_key', 'cliente_id', 'nombre', 'sexo', 'fecha_alta', 'ciudad', 'segmento', 'email'],
+     'dim_cliente.csv'),
+    ('SELECT metodo_pago_id, metodo_nombre FROM dim_metodo_pago;',
+     ['metodo_pago_id', 'metodo_nombre'],
+     'dim_metodo_pago.csv'),
 
-export_csv('SELECT sucursal_id, sucursal, ciudad, estado, m2, categoria_tamano, transacciones, venta_neta, venta_por_m2, utilidad_bruta, margen_pct FROM vw_kpi_sucursales;',
-           ['sucursal_id', 'sucursal', 'ciudad', 'estado', 'm2', 'categoria_tamano', 'transacciones', 'venta_neta', 'venta_por_m2', 'utilidad_bruta', 'margen_pct'],
-           'PIA/03_dashboard_excel/datos_exportados/kpi_sucursales.csv')
+    # Tablas de Hechos completas (100% fidelidad sin truncamiento ni distorsion temporal)
+    ('SELECT venta_id, tiempo_id, producto_key, cliente_key, sucursal_key, canal_id, metodo_pago_id, cantidad, monto_bruto, monto_descuento, monto_neto, costo_total, utilidad_bruta FROM fact_ventas_detalle;',
+     ['venta_id', 'tiempo_id', 'producto_key', 'cliente_key', 'sucursal_key', 'canal_id', 'metodo_pago_id', 'cantidad', 'monto_bruto', 'monto_descuento', 'monto_neto', 'costo_total', 'utilidad_bruta'],
+     'fact_ventas_detalle.csv'),
+    ('SELECT devolucion_id, venta_id, tiempo_id, producto_key, sucursal_key, cliente_key, cantidad_devuelta, importe_devuelto, motivo FROM fact_devoluciones;',
+     ['devolucion_id', 'venta_id', 'tiempo_id', 'producto_key', 'sucursal_key', 'cliente_key', 'cantidad_devuelta', 'importe_devuelto', 'motivo'],
+     'fact_devoluciones_completo.csv'),
+    ('SELECT instalacion_id, venta_id, tiempo_id, cliente_key, sucursal_key, dias_programados, dias_reales, dias_desviacion, cumplio_sla, satisfaccion FROM fact_instalaciones;',
+     ['instalacion_id', 'venta_id', 'tiempo_id', 'cliente_key', 'sucursal_key', 'dias_programados', 'dias_reales', 'dias_desviacion', 'cumplio_sla', 'satisfaccion'],
+     'fact_instalaciones_completo.csv'),
+    ('SELECT sucursal_key, producto_key, stock_actual, punto_reorden, deficit_unidades, valor_inventario_costo, estatus_stock FROM fact_inventario_snapshot;',
+     ['sucursal_key', 'producto_key', 'stock_actual', 'punto_reorden', 'deficit_unidades', 'valor_inventario_costo', 'estatus_stock'],
+     'fact_inventario_snapshot.csv'),
+]
 
-export_csv('SELECT sucursal, total_servicios, servicios_a_tiempo, servicios_con_retraso, cumplimiento_sla_pct, dias_reales_promedio, dias_retraso_promedio, satisfaccion_promedio FROM vw_kpi_instalaciones_sla;',
-           ['sucursal', 'total_servicios', 'servicios_a_tiempo', 'servicios_con_retraso', 'cumplimiento_sla_pct', 'dias_reales_promedio', 'dias_retraso_promedio', 'satisfaccion_promedio'],
-           'PIA/03_dashboard_excel/datos_exportados/kpi_instalaciones_sla.csv')
-
-export_csv('SELECT motivo, COUNT(*) AS eventos, SUM(cantidad_devuelta) AS piezas, SUM(importe_devuelto) AS total_reembolsado FROM fact_devoluciones GROUP BY motivo ORDER BY total_reembolsado DESC;',
-           ['motivo', 'eventos', 'piezas', 'total_reembolsado'],
-           'PIA/03_dashboard_excel/datos_exportados/kpi_devoluciones_motivos.csv')
-
-export_csv('SELECT estatus_stock, COUNT(*) AS items, SUM(stock_actual) AS piezas_stock, SUM(deficit_unidades) AS deficit_piezas, SUM(valor_inventario_costo) AS valor_inventario FROM fact_inventario_snapshot GROUP BY estatus_stock;',
-           ['estatus_stock', 'items', 'piezas_stock', 'deficit_piezas', 'valor_inventario'],
-           'PIA/03_dashboard_excel/datos_exportados/kpi_inventario_resumen.csv')
-
-# Tablas dimensionales y modelo para Power Pivot
-export_csv('SELECT tiempo_id, fecha, anio, trimestre, trimestre_nombre, mes, mes_nombre, mes_anio, semana_anio, dia_mes, dia_semana, dia_semana_nombre, es_fin_semana FROM dim_tiempo;',
-           ['tiempo_id', 'fecha', 'anio', 'trimestre', 'trimestre_nombre', 'mes', 'mes_nombre', 'mes_anio', 'semana_anio', 'dia_mes', 'dia_semana', 'dia_semana_nombre', 'es_fin_semana'],
-           'PIA/03_dashboard_excel/datos_exportados/dim_tiempo.csv')
-
-export_csv('SELECT producto_key, producto_id, sku, producto, categoria, marca, costo, precio_lista, margen_teorico_pct, activo, requiere_instalacion FROM dim_producto;',
-           ['producto_key', 'producto_id', 'sku', 'producto', 'categoria', 'marca', 'costo', 'precio_lista', 'margen_teorico_pct', 'activo', 'requiere_instalacion'],
-           'PIA/03_dashboard_excel/datos_exportados/dim_producto.csv')
-
-export_csv('SELECT sucursal_key, sucursal_id, sucursal, ciudad, estado, m2, categoria_tamano, fecha_apertura FROM dim_sucursal;',
-           ['sucursal_key', 'sucursal_id', 'sucursal', 'ciudad', 'estado', 'm2', 'categoria_tamano', 'fecha_apertura'],
-           'PIA/03_dashboard_excel/datos_exportados/dim_sucursal.csv')
-
-export_csv('SELECT canal_id, canal_nombre FROM dim_canal;',
-           ['canal_id', 'canal_nombre'],
-           'PIA/03_dashboard_excel/datos_exportados/dim_canal.csv')
-
-export_csv('''SELECT MIN(f.tiempo_id) as tiempo_id,
-                     f.producto_key,
-                     p.producto_id,
-                     p.categoria,
-                     f.sucursal_key,
-                     f.canal_id,
-                     COUNT(DISTINCT f.venta_id) as transacciones,
-                     SUM(f.cantidad) as cantidad,
-                     SUM(f.monto_bruto) as monto_bruto,
-                     SUM(f.monto_descuento) as monto_descuento,
-                     SUM(f.monto_neto) as monto_neto,
-                     SUM(f.costo_total) as costo_total,
-                     SUM(f.utilidad_bruta) as utilidad_bruta
-              FROM fact_ventas_detalle f
-              INNER JOIN dim_producto p ON f.producto_key = p.producto_key
-              GROUP BY f.producto_key, p.producto_id, p.categoria, f.sucursal_key, f.canal_id;''',
-           ['tiempo_id', 'producto_key', 'producto_id', 'categoria', 'sucursal_key', 'canal_id', 'transacciones', 'cantidad', 'monto_bruto', 'monto_descuento', 'monto_neto', 'costo_total', 'utilidad_bruta'],
-           'PIA/03_dashboard_excel/datos_exportados/fact_ventas_modelo.csv')
-
-export_csv('SELECT devolucion_id, venta_id, tiempo_id, producto_key, sucursal_key, cliente_key, cantidad_devuelta, importe_devuelto, motivo FROM fact_devoluciones LIMIT 2000;',
-           ['devolucion_id', 'venta_id', 'tiempo_id', 'producto_key', 'sucursal_key', 'cliente_key', 'cantidad_devuelta', 'importe_devuelto', 'motivo'],
-           'PIA/03_dashboard_excel/datos_exportados/fact_devoluciones_muestra.csv')
-
-export_csv('SELECT instalacion_id, venta_id, tiempo_id, cliente_key, sucursal_key, dias_programados, dias_reales, dias_desviacion, cumplio_sla, satisfaccion FROM fact_instalaciones;',
-           ['instalacion_id', 'venta_id', 'tiempo_id', 'cliente_key', 'sucursal_key', 'dias_programados', 'dias_reales', 'dias_desviacion', 'cumplio_sla', 'satisfaccion'],
-           'PIA/03_dashboard_excel/datos_exportados/fact_instalaciones_completo.csv')
-
+for sql, headers, fname in exports:
+    out_file = os.path.join(base_dir, fname)
+    export_csv(sql, headers, out_file)
+    print(f'  OK {fname}')
 "
 
 docker run --rm -v "$(pwd):/workspace" localhost/equipo8-u5-generator:latest python3 PIA/scripts_docker/generar_dashboard_excel.py

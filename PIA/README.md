@@ -63,9 +63,9 @@ PIA/
 │   ├── 07_auditoria_balance_masa.sql      # Verificación y balance de masa oficial
 │   └── script_maestro_pia_etl.sql         # Script SQL maestro reproducible
 ├── 03_dashboard_excel/
-│   ├── 01_catalogo_medidas_dax.md         # Catálogo oficial de 10 medidas DAX
-│   ├── 02_especificacion_dashboard.md     # Maquetación, colores y diseño visual
-│   └── datos_exportados/                  # Datasets analíticos sincronizados
+│   ├── 01_catalogo_medidas_dax.md         # Catálogo oficial de 21 medidas DAX (5 Pilares)
+│   ├── 02_especificacion_dashboard.md     # Maquetación 3 vistas, colores y diseño visual
+│   └── datos_exportados/                  # Datasets analíticos completos sincronizados
 ├── 04_presentacion_ejecutiva/
 │   ├── 01_guion_storytelling_15min.md     # Guion minuto a minuto para defensa ante sínodo
 │   └── 02_contenido_10_diapositivas.md    # Transcripción estructurada de las 10 slides
@@ -122,7 +122,7 @@ La auditoría ejecutada directamente sobre el Data Mart en MySQL 8.0 certifica l
 | **Margen Bruto Porcentual** | **`21.43%`** | Desempeño consistente interanual |
 | **Ticket Promedio Global** | **`$9,362.47 MXN`** | Gasto promedio por cliente |
 | **Reembolsos por Devoluciones** | `$22,897,836.87 MXN` | 9,952 eventos (1.63% venta bruta) |
-| **Cumplimiento SLA Instalaciones** | **`34.77%`** | 65.23% fuera de tiempo (+3.8 días retraso) |
+| **Cumplimiento SLA Instalaciones** | **`36.91%`** | 63.09% fuera de tiempo (+3.41 días retraso \| CSAT 2.99) |
 | **Ítems en Rotura Total de Stock** | `126 SKUs` | Stock = 0 en sucursales de alta demanda |
 | **Discrepancia Contable / Huérfanos** | **`0 / Cero Huérfanos`** | Integridad referencial perfecta |
 
@@ -131,7 +131,7 @@ La auditoría ejecutada directamente sobre el Data Mart en MySQL 8.0 certifica l
 ## 🎯 Hallazgos Críticos y Recomendaciones Prescriptivas para el C-Level
 
 1. **Corrección de Calidad en el POS:** Se descubrió que el campo `importe` en el RAW facturaba el subtotal bruto sin restar el descuento comercial. De no haberse corregido en el ETL, los estados financieros habrían sobreestimado los ingresos en $91.75M MXN.
-2. **Cuello de Botella en Instalaciones:** Únicamente el 34.77% de los servicios técnicos se entregan a tiempo, con retrasos promedio de 3.8 días que desploman el índice de satisfacción (CSAT) a 2.86 en sucursales como Apodaca. Se prescribe licitar cuadrillas dedicadas para alcanzar 85% de cumplimiento en 90 días.
+2. **Cuello de Botella en Instalaciones:** Únicamente el 36.91% (2,399 de 6,500) de los servicios técnicos se entregan a tiempo, con retrasos promedio de +3.41 días (CSAT global 2.99) que caen a 2.86 en sucursales críticas como Apodaca 2. Se prescribe licitar cuadrillas dedicadas para alcanzar 85% de cumplimiento en 90 días.
 3. **Fuga por Devoluciones ($22.9M MXN):** El 39% de las devoluciones se originan por daños en transporte o defectos de fábrica ($8.9M). Se requiere un protocolo estricto de inspección en muelle y embalaje reforzado.
 4. **Desbalance de Inventario:** Coexisten 126 roturas de stock con $2,330M MXN inmovilizados en sobreinventario. Se prescribe conectar el Data Mart a un algoritmo dinámico de punto de reorden semanal por sucursal.
 5. **Potencial de la App Móvil:** Representa actualmente el 9.8% de ventas ($128.8M) con un margen idéntico a tienda física (21.47%). Incorporar un visualizador 3D/AR en la app resolverá devoluciones por talla/espacio ($4.6M) y duplicará la cuota digital al 20%.

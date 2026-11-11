@@ -636,9 +636,9 @@ def generate_deck():
 
     # 4 Cards SLA
     add_card(s8, Inches(0.8), Inches(1.4), Inches(2.7), Inches(1.3), "Servicios Auditados", "6,500", "Órdenes de instalación", COLOR_NAVY)
-    add_card(s8, Inches(3.7), Inches(1.4), Inches(2.7), Inches(1.3), "Cumplimiento SLA", "34.77%", "¡ALERTA CRÍTICA!", COLOR_RED)
-    add_card(s8, Inches(6.6), Inches(1.4), Inches(2.7), Inches(1.3), "Retraso Promedio", "+3.8 Días", "Varianza real vs pactada", COLOR_RED)
-    add_card(s8, Inches(9.5), Inches(1.4), Inches(2.7), Inches(1.3), "Satisfacción Promedio", "2.98 / 5.0", "CSAT severamente dañado", COLOR_GOLD)
+    add_card(s8, Inches(3.7), Inches(1.4), Inches(2.7), Inches(1.3), "Cumplimiento SLA", "36.91%", "¡ALERTA CRÍTICA!", COLOR_RED)
+    add_card(s8, Inches(6.6), Inches(1.4), Inches(2.7), Inches(1.3), "Retraso Promedio", "+3.41 Días", "Varianza real vs pactada", COLOR_RED)
+    add_card(s8, Inches(9.5), Inches(1.4), Inches(2.7), Inches(1.3), "Satisfacción Promedio", "2.99 / 5.0", "CSAT severamente dañado", COLOR_GOLD)
 
     # Tabla Top 5 Sucursales con Peor SLA
     t_sla_shape = s8.shapes.add_table(6, 5, Inches(0.8), Inches(2.9), Inches(11.733), Inches(2.2))
@@ -781,7 +781,7 @@ def generate_deck():
     add_footer(s10, 10)
 
     recs = [
-        ("1. Rediseño Operativo del SLA de Instalaciones", "Contratar cuadrillas logísticas regionales dedicadas y optimizar rutas. Meta: pasar de 34.7% a 85% de cumplimiento en 90 días (+1.5 pts CSAT).", COLOR_RED),
+        ("1. Rediseño Operativo del SLA de Instalaciones", "Contratar cuadrillas logísticas regionales dedicadas y optimizar rutas. Meta: pasar de 36.9% a 85% de cumplimiento en 90 días (+1.5 pts CSAT).", COLOR_RED),
         ("2. Protocolo de Inspección en Muelle y Embalaje Reforzado", "Certificar empaques con proveedores y penalizar defectos. Meta: reducir en 40% las devoluciones por daño/defecto (Ahorro: ~$9.2M MXN anuales).", COLOR_GOLD),
         ("3. Algoritmo Dinámico de Reorden y Rebalanceo de Stock", "Conectar el Data Mart para calcular puntos de reorden según velocidad de venta semanal por tienda. Eliminar las 126 roturas de stock y liberar capital.", COLOR_BLUE),
         ("4. Aceleración Comercial de la App Móvil con AR/3D", "Incorporar visor de muebles en realidad aumentada en la App para resolver el motivo 'talla/espacio' ($4.6M devueltos) y duplicar cuota digital al 20%.", COLOR_GREEN),

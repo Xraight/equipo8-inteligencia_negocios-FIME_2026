@@ -1,0 +1,5 @@
+metodo_pago_id,metodo_nombre
+2,Efectivo
+1,Tarjeta
+3,Transferencia
+4,Wallet
